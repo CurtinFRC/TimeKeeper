@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package tk.db;
+
+import "common/common.proto";
+
+message Secret {
+  bytes secret_bytes = 1;
+}
+
+message User {
+  string username = 1;
+  string password = 2;
+  repeated common.Role roles = 3;
+}
