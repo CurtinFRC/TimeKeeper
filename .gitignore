@@ -1,6 +1,9 @@
 # For references, check https://github.com/github/gitignore
 # And use selected language templates for the root ignore
 
+# Windows NUL device artifact
+NUL
+
 # User Specific Ignore
 logs/
 tk.db/

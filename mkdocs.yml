@@ -1,13 +1,13 @@
 # Project information
 site_name: Time Keeper Documentation
-site_url: https://curtinfrc.github.io/TMS/
+site_url: https://curtinfrc.github.io/TimeKeeper/
 site_author: Connor (CJ) Buchel
 site_description: >-
-  Time Keeper - Documentation for TK Sign in/Management
+  Time Keeper - Documentation for TK Management
 
 # Repository information
 repo_name: CurtinFRC/TimeKeeper
-repo_url: https://github.com/CurtinFRC/TMS/
+repo_url: https://github.com/CurtinFRC/TimeKeeper/
 edit_uri: edit/master/docs/
 
 # Navigation structure - customize this based on your content
@@ -18,7 +18,7 @@ nav:
   - Support:
       - Bug Reports: support/bug_reports.md
       - Change Requests: support/change_requests.md
-      - Q&A: https://github.com/CJBuchel/TMS/discussions
+      - Q&A: https://github.com/CurtinFRC/TimeKeeper/discussions
 
 # Site configuration
 theme:
@@ -26,8 +26,8 @@ theme:
   font:
     text: "Ubuntu"
     code: "Ubuntu Mono"
-  logo: assets/TMS_Logo.svg
-  favicon: assets/TMS_Logo.svg
+  logo: assets/logo.png
+  favicon: assets/logo.png
 
   # Color scheme with your primary color
   palette:
@@ -36,7 +36,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to dark mode
-      primary: teal
+      primary: blue
       accent: indigo
 
     # light theme
@@ -44,7 +44,7 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-      primary: teal
+      primary: blue
       accent: indigo
 
   # Navigation features
@@ -112,8 +112,8 @@ markdown_extensions:
   - pymdownx.keys # Keyboard keys (++ctrl+alt+del++)
   - pymdownx.magiclink: # Auto-link URLs and GitHub references
       repo_url_shorthand: true
-      user: CJBuchel
-      repo: TMS
+      user: CurtinFRC
+      repo: TimeKeeper
   - pymdownx.smartsymbols # Smart symbols (arrows, fractions, etc.)
   - pymdownx.snippets: # Include external files
       check_paths: true
@@ -135,5 +135,5 @@ extra:
   # Social links in footer
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/CJBuchel/TMS
-      name: TMS on GitHub
+      link: https://github.com/CurtinFRC/TimeKeeper
+      name: TimeKeeper on GitHub
