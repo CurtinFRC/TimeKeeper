@@ -11,6 +11,8 @@ import 'package:time_keeper/router/deferred_widget.dart';
 import 'package:time_keeper/views/home/home_view.dart' deferred as home;
 import 'package:time_keeper/views/login/login_view.dart' deferred as login;
 import 'package:time_keeper/views/setup/setup_view.dart' deferred as setup;
+import 'package:time_keeper/views/settings/settings_view.dart'
+    deferred as settings;
 
 part 'router.g.dart';
 
@@ -151,6 +153,21 @@ GoRouter router(Ref ref) {
             libraryKey: AppRoute.login.path,
             libraryLoader: login.loadLibrary,
             builder: (context) => login.LoginView(),
+          ),
+        ),
+      ),
+
+      GoRoute(
+        name: AppRoute.settings.name,
+        path: AppRoute.settings.path,
+        builder: (context, state) => BaseScaffold(
+          showActions: false,
+          disableRail: true,
+          state: state,
+          child: DeferredWidget(
+            libraryKey: AppRoute.settings.path,
+            libraryLoader: settings.loadLibrary,
+            builder: (context) => settings.SettingsView(),
           ),
         ),
       ),

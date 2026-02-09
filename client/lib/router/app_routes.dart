@@ -17,6 +17,7 @@ enum AppRoute {
   // Public routes
   home(path: '/', name: 'home', railIndex: null),
   login(path: '/login', name: 'login', railIndex: null),
+  settings(path: '/settings', name: 'settings', railIndex: null),
 
   // Protected routes (nested under /protected)
   setup(

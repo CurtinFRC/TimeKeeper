@@ -16,6 +16,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
+export 'location.pb.dart';
 export 'schedule.pb.dart';
 export 'session.pb.dart';
 export 'team_member.pb.dart';
