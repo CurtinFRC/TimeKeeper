@@ -13,3 +13,67 @@ pub struct User {
     #[prost(enumeration = "super::common::Role", repeated, tag = "3")]
     pub roles: ::prost::alloc::vec::Vec<i32>,
 }
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct TeamMember {
+    #[prost(string, tag = "1")]
+    pub first_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub last_name: ::prost::alloc::string::String,
+    #[prost(enumeration = "TeamMemberType", tag = "3")]
+    pub member_type: i32,
+    #[prost(string, optional, tag = "4")]
+    pub alias: ::core::option::Option<::prost::alloc::string::String>,
+}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct Location {
+    #[prost(string, tag = "1")]
+    pub location: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct TeamMemberSession {
+    #[prost(string, tag = "1")]
+    pub team_member_id: ::prost::alloc::string::String,
+    #[prost(message, optional, tag = "2")]
+    pub check_in_time: ::core::option::Option<super::common::TkDateTime>,
+    #[prost(message, optional, tag = "3")]
+    pub check_out_time: ::core::option::Option<super::common::TkDateTime>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Session {
+    #[prost(message, optional, tag = "1")]
+    pub start_time: ::core::option::Option<super::common::TkDateTime>,
+    #[prost(message, optional, tag = "2")]
+    pub end_time: ::core::option::Option<super::common::TkDateTime>,
+    #[prost(message, optional, tag = "3")]
+    pub location: ::core::option::Option<Location>,
+    #[prost(message, repeated, tag = "4")]
+    pub member_sessions: ::prost::alloc::vec::Vec<TeamMemberSession>,
+    #[prost(bool, tag = "5")]
+    pub finished: bool,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum TeamMemberType {
+    Student = 0,
+    Mentor = 1,
+}
+impl TeamMemberType {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Self::Student => "STUDENT",
+            Self::Mentor => "MENTOR",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "STUDENT" => Some(Self::Student),
+            "MENTOR" => Some(Self::Mentor),
+            _ => None,
+        }
+    }
+}

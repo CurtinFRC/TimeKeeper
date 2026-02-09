@@ -5,6 +5,7 @@ import 'package:time_keeper/base/app_bar/login_action.dart';
 import 'package:time_keeper/base/app_bar/settings_action.dart';
 import 'package:time_keeper/base/app_bar/theme_action.dart';
 import 'package:time_keeper/colors.dart';
+import 'package:time_keeper/providers/auth_provider.dart';
 import 'package:time_keeper/providers/health_provider.dart';
 import 'package:time_keeper/router/app_routes.dart';
 
@@ -34,12 +35,14 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return null;
   }
 
-  Widget _leading(BuildContext context) {
+  Widget _leading(BuildContext context, String username) {
     // Show home button only when not on home page
     final isHomePage = state.matchedLocation == '/';
 
     if (isHomePage) {
-      return SizedBox.shrink(); // Hide button on home page
+      return Center(
+        child: Text(username, style: TextStyle(fontWeight: FontWeight.bold)),
+      ); // Hide button on home page
     }
 
     return IconButton(
@@ -51,10 +54,11 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isConnected = ref.watch(isConnectedProvider).value ?? false;
+    final username = ref.watch(usernameProvider);
 
     return AppBar(
       backgroundColor: isConnected ? null : supportErrorColor,
-      leading: _leading(context),
+      leading: _leading(context, username ?? ''),
       title: _title(isConnected, ref),
       actions: _actions(),
     );
