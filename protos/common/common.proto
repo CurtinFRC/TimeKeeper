@@ -10,8 +10,8 @@ message Timestamp {
 // Represents a date (year, month, day)
 message TkDate {
   int32 year = 1; // Year (e.g., 2024)
-  int32 month = 2; // Month (1-12)
-  int32 day = 3; // Day (1-31)
+  uint32 month = 2; // Month (1-12)
+  uint32 day = 3; // Day (1-31)
 }
 
 // Represents a time of day

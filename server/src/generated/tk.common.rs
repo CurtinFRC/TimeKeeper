@@ -15,11 +15,11 @@ pub struct TkDate {
     #[prost(int32, tag = "1")]
     pub year: i32,
     /// Month (1-12)
-    #[prost(int32, tag = "2")]
-    pub month: i32,
+    #[prost(uint32, tag = "2")]
+    pub month: u32,
     /// Day (1-31)
-    #[prost(int32, tag = "3")]
-    pub day: i32,
+    #[prost(uint32, tag = "3")]
+    pub day: u32,
 }
 /// Represents a time of day
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]

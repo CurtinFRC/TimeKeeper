@@ -23,6 +23,8 @@ pub struct TeamMember {
     pub member_type: i32,
     #[prost(string, optional, tag = "4")]
     pub alias: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "5")]
+    pub secondary_alias: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Location {
@@ -44,8 +46,8 @@ pub struct Session {
     pub start_time: ::core::option::Option<super::common::TkDateTime>,
     #[prost(message, optional, tag = "2")]
     pub end_time: ::core::option::Option<super::common::TkDateTime>,
-    #[prost(message, optional, tag = "3")]
-    pub location: ::core::option::Option<Location>,
+    #[prost(string, tag = "3")]
+    pub location_id: ::prost::alloc::string::String,
     #[prost(message, repeated, tag = "4")]
     pub member_sessions: ::prost::alloc::vec::Vec<TeamMemberSession>,
     #[prost(bool, tag = "5")]

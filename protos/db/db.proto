@@ -24,6 +24,7 @@ message TeamMember {
   string last_name = 2;
   TeamMemberType member_type = 3;
   optional string alias = 4;
+  optional string secondary_alias = 5;
 }
 
 message Location {
@@ -39,7 +40,7 @@ message TeamMemberSession {
 message Session {
   common.TkDateTime start_time = 1;
   common.TkDateTime end_time = 2;
-  Location location = 3;
+  string location_id = 3;
   repeated TeamMemberSession member_sessions = 4;
   bool finished = 5;
 }

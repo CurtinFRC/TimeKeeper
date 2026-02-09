@@ -49,15 +49,15 @@ const TkDate$json = {
   '1': 'TkDate',
   '2': [
     {'1': 'year', '3': 1, '4': 1, '5': 5, '10': 'year'},
-    {'1': 'month', '3': 2, '4': 1, '5': 5, '10': 'month'},
-    {'1': 'day', '3': 3, '4': 1, '5': 5, '10': 'day'},
+    {'1': 'month', '3': 2, '4': 1, '5': 13, '10': 'month'},
+    {'1': 'day', '3': 3, '4': 1, '5': 13, '10': 'day'},
   ],
 };
 
 /// Descriptor for `TkDate`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List tkDateDescriptor = $convert.base64Decode(
-    'CgZUa0RhdGUSEgoEeWVhchgBIAEoBVIEeWVhchIUCgVtb250aBgCIAEoBVIFbW9udGgSEAoDZG'
-    'F5GAMgASgFUgNkYXk=');
+    'CgZUa0RhdGUSEgoEeWVhchgBIAEoBVIEeWVhchIUCgVtb250aBgCIAEoDVIFbW9udGgSEAoDZG'
+    'F5GAMgASgNUgNkYXk=');
 
 @$core.Deprecated('Use tkTimeDescriptor instead')
 const TkTime$json = {

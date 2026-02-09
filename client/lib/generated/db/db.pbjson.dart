@@ -77,9 +77,19 @@ const TeamMember$json = {
       '10': 'memberType'
     },
     {'1': 'alias', '3': 4, '4': 1, '5': 9, '9': 0, '10': 'alias', '17': true},
+    {
+      '1': 'secondary_alias',
+      '3': 5,
+      '4': 1,
+      '5': 9,
+      '9': 1,
+      '10': 'secondaryAlias',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_alias'},
+    {'1': '_secondary_alias'},
   ],
 };
 
@@ -87,7 +97,9 @@ const TeamMember$json = {
 final $typed_data.Uint8List teamMemberDescriptor = $convert.base64Decode(
     'CgpUZWFtTWVtYmVyEh0KCmZpcnN0X25hbWUYASABKAlSCWZpcnN0TmFtZRIbCglsYXN0X25hbW'
     'UYAiABKAlSCGxhc3ROYW1lEjYKC21lbWJlcl90eXBlGAMgASgOMhUudGsuZGIuVGVhbU1lbWJl'
-    'clR5cGVSCm1lbWJlclR5cGUSGQoFYWxpYXMYBCABKAlIAFIFYWxpYXOIAQFCCAoGX2FsaWFz');
+    'clR5cGVSCm1lbWJlclR5cGUSGQoFYWxpYXMYBCABKAlIAFIFYWxpYXOIAQESLAoPc2Vjb25kYX'
+    'J5X2FsaWFzGAUgASgJSAFSDnNlY29uZGFyeUFsaWFziAEBQggKBl9hbGlhc0ISChBfc2Vjb25k'
+    'YXJ5X2FsaWFz');
 
 @$core.Deprecated('Use locationDescriptor instead')
 const Location$json = {
@@ -157,14 +169,7 @@ const Session$json = {
       '6': '.tk.common.TkDateTime',
       '10': 'endTime'
     },
-    {
-      '1': 'location',
-      '3': 3,
-      '4': 1,
-      '5': 11,
-      '6': '.tk.db.Location',
-      '10': 'location'
-    },
+    {'1': 'location_id', '3': 3, '4': 1, '5': 9, '10': 'locationId'},
     {
       '1': 'member_sessions',
       '3': 4,
@@ -181,6 +186,6 @@ const Session$json = {
 final $typed_data.Uint8List sessionDescriptor = $convert.base64Decode(
     'CgdTZXNzaW9uEjQKCnN0YXJ0X3RpbWUYASABKAsyFS50ay5jb21tb24uVGtEYXRlVGltZVIJc3'
     'RhcnRUaW1lEjAKCGVuZF90aW1lGAIgASgLMhUudGsuY29tbW9uLlRrRGF0ZVRpbWVSB2VuZFRp'
-    'bWUSKwoIbG9jYXRpb24YAyABKAsyDy50ay5kYi5Mb2NhdGlvblIIbG9jYXRpb24SQQoPbWVtYm'
-    'VyX3Nlc3Npb25zGAQgAygLMhgudGsuZGIuVGVhbU1lbWJlclNlc3Npb25SDm1lbWJlclNlc3Np'
-    'b25zEhoKCGZpbmlzaGVkGAUgASgIUghmaW5pc2hlZA==');
+    'bWUSHwoLbG9jYXRpb25faWQYAyABKAlSCmxvY2F0aW9uSWQSQQoPbWVtYmVyX3Nlc3Npb25zGA'
+    'QgAygLMhgudGsuZGIuVGVhbU1lbWJlclNlc3Npb25SDm1lbWJlclNlc3Npb25zEhoKCGZpbmlz'
+    'aGVkGAUgASgIUghmaW5pc2hlZA==');

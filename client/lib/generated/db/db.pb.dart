@@ -155,12 +155,14 @@ class TeamMember extends $pb.GeneratedMessage {
     $core.String? lastName,
     TeamMemberType? memberType,
     $core.String? alias,
+    $core.String? secondaryAlias,
   }) {
     final result = create();
     if (firstName != null) result.firstName = firstName;
     if (lastName != null) result.lastName = lastName;
     if (memberType != null) result.memberType = memberType;
     if (alias != null) result.alias = alias;
+    if (secondaryAlias != null) result.secondaryAlias = secondaryAlias;
     return result;
   }
 
@@ -182,6 +184,7 @@ class TeamMember extends $pb.GeneratedMessage {
     ..aE<TeamMemberType>(3, _omitFieldNames ? '' : 'memberType',
         enumValues: TeamMemberType.values)
     ..aOS(4, _omitFieldNames ? '' : 'alias')
+    ..aOS(5, _omitFieldNames ? '' : 'secondaryAlias')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -237,6 +240,15 @@ class TeamMember extends $pb.GeneratedMessage {
   $core.bool hasAlias() => $_has(3);
   @$pb.TagNumber(4)
   void clearAlias() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get secondaryAlias => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set secondaryAlias($core.String value) => $_setString(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasSecondaryAlias() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearSecondaryAlias() => $_clearField(5);
 }
 
 class Location extends $pb.GeneratedMessage {
@@ -380,14 +392,14 @@ class Session extends $pb.GeneratedMessage {
   factory Session({
     $0.TkDateTime? startTime,
     $0.TkDateTime? endTime,
-    Location? location,
+    $core.String? locationId,
     $core.Iterable<TeamMemberSession>? memberSessions,
     $core.bool? finished,
   }) {
     final result = create();
     if (startTime != null) result.startTime = startTime;
     if (endTime != null) result.endTime = endTime;
-    if (location != null) result.location = location;
+    if (locationId != null) result.locationId = locationId;
     if (memberSessions != null) result.memberSessions.addAll(memberSessions);
     if (finished != null) result.finished = finished;
     return result;
@@ -410,8 +422,7 @@ class Session extends $pb.GeneratedMessage {
         subBuilder: $0.TkDateTime.create)
     ..aOM<$0.TkDateTime>(2, _omitFieldNames ? '' : 'endTime',
         subBuilder: $0.TkDateTime.create)
-    ..aOM<Location>(3, _omitFieldNames ? '' : 'location',
-        subBuilder: Location.create)
+    ..aOS(3, _omitFieldNames ? '' : 'locationId')
     ..pPM<TeamMemberSession>(4, _omitFieldNames ? '' : 'memberSessions',
         subBuilder: TeamMemberSession.create)
     ..aOB(5, _omitFieldNames ? '' : 'finished')
@@ -458,15 +469,13 @@ class Session extends $pb.GeneratedMessage {
   $0.TkDateTime ensureEndTime() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  Location get location => $_getN(2);
+  $core.String get locationId => $_getSZ(2);
   @$pb.TagNumber(3)
-  set location(Location value) => $_setField(3, value);
+  set locationId($core.String value) => $_setString(2, value);
   @$pb.TagNumber(3)
-  $core.bool hasLocation() => $_has(2);
+  $core.bool hasLocationId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearLocation() => $_clearField(3);
-  @$pb.TagNumber(3)
-  Location ensureLocation() => $_ensure(2);
+  void clearLocationId() => $_clearField(3);
 
   @$pb.TagNumber(4)
   $pb.PbList<TeamMemberSession> get memberSessions => $_getList(3);

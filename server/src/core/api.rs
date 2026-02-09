@@ -8,8 +8,12 @@ use tower_http::cors::{Any, CorsLayer};
 use crate::{
   auth::auth_interceptors::auth_interceptor,
   core::shutdown::ShutdownNotifier,
-  generated::api::{health_service_server::HealthServiceServer, user_service_server::UserServiceServer},
-  modules::{health::HealthApi, user::UserApi},
+  generated::api::{
+    health_service_server::HealthServiceServer, schedule_service_server::ScheduleServiceServer,
+    session_service_server::SessionServiceServer, team_member_service_server::TeamMemberServiceServer,
+    user_service_server::UserServiceServer,
+  },
+  modules::{health::HealthApi, schedule::ScheduleApi, session::SessionApi, team_member::TeamMemberApi, user::UserApi},
 };
 
 pub struct Api {
@@ -45,7 +49,10 @@ impl Api {
       .layer(GrpcWebLayer::new())
       // Add services
       .add_service(HealthServiceServer::new(HealthApi {}))
-      .add_service(UserServiceServer::with_interceptor(UserApi {}, auth_interceptor));
+      .add_service(UserServiceServer::with_interceptor(UserApi {}, auth_interceptor))
+      .add_service(ScheduleServiceServer::with_interceptor(ScheduleApi {}, auth_interceptor))
+      .add_service(TeamMemberServiceServer::with_interceptor(TeamMemberApi {}, auth_interceptor))
+      .add_service(SessionServiceServer::with_interceptor(SessionApi {}, auth_interceptor));
 
     match router
       .serve_with_shutdown(self.addr, async move {

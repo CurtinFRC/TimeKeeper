@@ -112,8 +112,8 @@ class TkDate extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'tk.common'),
       createEmptyInstance: create)
     ..aI(1, _omitFieldNames ? '' : 'year')
-    ..aI(2, _omitFieldNames ? '' : 'month')
-    ..aI(3, _omitFieldNames ? '' : 'day')
+    ..aI(2, _omitFieldNames ? '' : 'month', fieldType: $pb.PbFieldType.OU3)
+    ..aI(3, _omitFieldNames ? '' : 'day', fieldType: $pb.PbFieldType.OU3)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -146,7 +146,7 @@ class TkDate extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   $core.int get month => $_getIZ(1);
   @$pb.TagNumber(2)
-  set month($core.int value) => $_setSignedInt32(1, value);
+  set month($core.int value) => $_setUnsignedInt32(1, value);
   @$pb.TagNumber(2)
   $core.bool hasMonth() => $_has(1);
   @$pb.TagNumber(2)
@@ -155,7 +155,7 @@ class TkDate extends $pb.GeneratedMessage {
   @$pb.TagNumber(3)
   $core.int get day => $_getIZ(2);
   @$pb.TagNumber(3)
-  set day($core.int value) => $_setSignedInt32(2, value);
+  set day($core.int value) => $_setUnsignedInt32(2, value);
   @$pb.TagNumber(3)
   $core.bool hasDay() => $_has(2);
   @$pb.TagNumber(3)

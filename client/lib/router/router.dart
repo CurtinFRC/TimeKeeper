@@ -10,6 +10,7 @@ import 'package:time_keeper/router/deferred_widget.dart';
 // Deferred
 import 'package:time_keeper/views/home/home_view.dart' deferred as home;
 import 'package:time_keeper/views/login/login_view.dart' deferred as login;
+import 'package:time_keeper/views/setup/setup_view.dart' deferred as setup;
 
 part 'router.g.dart';
 
@@ -121,18 +122,18 @@ GoRouter router(Ref ref) {
               return null;
             },
             routes: [
-              // GoRoute(
-              //   name: AppRoute.setup.name,
-              //   path: AppRoute.setup.path,
-              //   pageBuilder: (context, state) => _buildTransitionPage(
-              //     key: state.pageKey,
-              //     child: DeferredWidget(
-              //       libraryKey: AppRoute.setup.path,
-              //       libraryLoader: setup.loadLibrary,
-              //       builder: (context) => setup.SetupView(),
-              //     ),
-              //   ),
-              // ),
+              GoRoute(
+                name: AppRoute.setup.name,
+                path: AppRoute.setup.path,
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  key: state.pageKey,
+                  child: DeferredWidget(
+                    libraryKey: AppRoute.setup.path,
+                    libraryLoader: setup.loadLibrary,
+                    builder: (context) => setup.SetupView(),
+                  ),
+                ),
+              ),
             ],
           ),
         ],
