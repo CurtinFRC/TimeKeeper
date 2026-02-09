@@ -26,40 +26,40 @@ impl CsvParser {
       let fields = line.split(',').collect::<Vec<&str>>();
       if fields.first() == Some(&"LOCATION") {
         continue; // skip header row
-      } else {
-        // Location
-        let location: String = match fields.get(1) {
-          Some(location) => location.to_string(),
-          None => return Err(anyhow!("Could not parse location")),
-        };
-        locations.push(location.clone());
-
-        // Session
-        let start_time = match fields.get(2) {
-          Some(time) => time.to_string(),
-          None => return Err(anyhow!("Could not parse start time")),
-        };
-        let start_time = match start_time.parse::<chrono::NaiveDateTime>() {
-          Ok(time) => TkDateTime {
-            date: Some(TkDate { year: time.year(), month: time.month(), day: time.day() }),
-            time: Some(TkTime { hour: time.hour(), minute: time.minute(), second: time.second() }),
-          },
-          Err(_) => TkDateTime { date: None, time: None },
-        };
-
-        let end_time = match fields.get(3) {
-          Some(time) => time.to_string(),
-          None => "session_end_time".to_string(),
-        };
-        let end_time = match end_time.parse::<chrono::NaiveDateTime>() {
-          Ok(time) => TkDateTime {
-            date: Some(TkDate { year: time.year(), month: time.month(), day: time.day() }),
-            time: Some(TkTime { hour: time.hour(), minute: time.minute(), second: time.second() }),
-          },
-          Err(_) => TkDateTime { date: None, time: None },
-        };
-        sessions.push(ScheduleSessionT { start_time, end_time, location_name: location });
       }
+
+      // Location
+      let location: String = match fields.get(1) {
+        Some(location) => (*location).to_string(),
+        None => return Err(anyhow!("Could not parse location")),
+      };
+      locations.push(location.clone());
+
+      // Session
+      let start_time = match fields.get(2) {
+        Some(time) => (*time).to_string(),
+        None => return Err(anyhow!("Could not parse start time")),
+      };
+      let start_time = match start_time.parse::<chrono::NaiveDateTime>() {
+        Ok(time) => TkDateTime {
+          date: Some(TkDate { year: time.year(), month: time.month(), day: time.day() }),
+          time: Some(TkTime { hour: time.hour(), minute: time.minute(), second: time.second() }),
+        },
+        Err(_) => TkDateTime { date: None, time: None },
+      };
+
+      let end_time = match fields.get(3) {
+        Some(time) => (*time).to_string(),
+        None => "session_end_time".to_string(),
+      };
+      let end_time = match end_time.parse::<chrono::NaiveDateTime>() {
+        Ok(time) => TkDateTime {
+          date: Some(TkDate { year: time.year(), month: time.month(), day: time.day() }),
+          time: Some(TkTime { hour: time.hour(), minute: time.minute(), second: time.second() }),
+        },
+        Err(_) => TkDateTime { date: None, time: None },
+      };
+      sessions.push(ScheduleSessionT { start_time, end_time, location_name: location });
     }
 
     Ok(Schedule { sessions, locations })

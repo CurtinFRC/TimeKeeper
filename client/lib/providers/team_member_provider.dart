@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:time_keeper/generated/api/team_member.pbgrpc.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
-import 'package:time_keeper/generated/db/db.pbenum.dart';
 import 'package:time_keeper/helpers/auth_interceptor.dart';
 import 'package:time_keeper/helpers/collection_storage.dart';
 import 'package:time_keeper/helpers/reconnecting_stream.dart';

@@ -23,7 +23,7 @@ impl TeamMemberCsvParser {
         continue; // skip header row
       }
 
-      let first_name = match fields.get(0) {
+      let first_name = match fields.first() {
         Some(name) => name.trim().to_string(),
         None => return Err(anyhow!("Could not parse first name")),
       };

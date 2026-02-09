@@ -62,12 +62,9 @@ impl ScheduleService for ScheduleApi {
         }
       };
 
-      let (location_id, _) = match locations.into_iter().next() {
-        Some(entry) => entry,
-        None => {
-          log::error!("Location not found: {}", session.location_name);
-          return Err(Status::not_found(format!("Location not found: {}", session.location_name)));
-        }
+      let Some((location_id, _)) = locations.into_iter().next() else {
+        log::error!("Location not found: {}", session.location_name);
+        return Err(Status::not_found(format!("Location not found: {}", session.location_name)));
       };
 
       let new_session = Session {
