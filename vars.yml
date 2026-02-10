@@ -1,0 +1,5 @@
+# This file is used for deploy variables
+# I.e, version of the app, etc.
+variables:
+  - name: tk_version
+    value: 1.0.0

@@ -1,19 +1,166 @@
-name: Build
+name: Build & Release
 
 on:
   push:
     branches:
       - main
       - master
+      - ci-cd
   pull_request:
     branches:
       - main
       - master
+      - ci-cd
 
 jobs:
-  pre-build:
-    name: Pre-Build
+  # ── Read version from vars.yml ──────────────────────────────────────
+  read-version:
+    name: Read Version
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+      - name: Parse vars.yml
+        id: parse
+        run: |
+          version=$(grep 'name: tk_version' vars.yml -A1 | grep 'value:' | awk '{print $2}')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Version: $version"
+
+  # ── Build Flutter web client ────────────────────────────────────────
+  build-web-client:
+    name: Build Web Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Build Flutter web (release)
+        working-directory: client
+        run: flutter build web --release --wasm
+      - name: Upload web client artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-client
+          path: client/build/web/
+          retention-days: 1
+
+  # ── Build server binaries ───────────────────────────────────────────
+  build-server:
+    name: Build Server (${{ matrix.name }})
+    needs: [read-version, build-web-client]
+    strategy:
+      matrix:
+        include:
+          - name: linux-x86_64
+            runner: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            artifact: timekeeper-server-linux-x86_64
+            archive: tar.gz
+          - name: windows-x86_64
+            runner: ubuntu-latest
+            target: x86_64-pc-windows-gnu
+            artifact: timekeeper-server-windows-x86_64
+            archive: zip
+          - name: macos-x86_64
+            runner: macos-latest
+            target: x86_64-apple-darwin
+            artifact: timekeeper-server-macos-x86_64
+            archive: tar.gz
+          - name: macos-aarch64
+            runner: macos-latest
+            target: aarch64-apple-darwin
+            artifact: timekeeper-server-macos-aarch64
+            archive: tar.gz
+    runs-on: ${{ matrix.runner }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.target }}
+
+      # Linux-specific: install musl toolchain
+      - name: Install musl tools
+        if: matrix.target == 'x86_64-unknown-linux-musl'
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      # Windows cross-compile: install mingw-w64
+      - name: Install mingw-w64
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        run: sudo apt-get update && sudo apt-get install -y gcc-mingw-w64-x86-64
+
+      # Build the server
+      - name: Build server (release)
+        run: cargo build --release --target ${{ matrix.target }}
+
+      # Download the web client artifact
+      - name: Download web client
+        uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          path: staging/client/build/web
+
+      # Prepare the release archive
+      - name: Prepare archive (tar.gz)
+        if: matrix.archive == 'tar.gz'
+        run: |
+          mkdir -p staging
+          cp target/${{ matrix.target }}/release/main staging/timekeeper-server
+          chmod +x staging/timekeeper-server
+          cd staging
+          tar -czf ../${{ matrix.artifact }}.tar.gz .
+
+      - name: Prepare archive (zip)
+        if: matrix.archive == 'zip'
+        run: |
+          mkdir -p staging
+          cp target/${{ matrix.target }}/release/main.exe staging/timekeeper-server.exe
+          cd staging
+          zip -r ../${{ matrix.artifact }}.zip .
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.${{ matrix.archive }}
+          retention-days: 5
+
+  # ── Create GitHub Release ───────────────────────────────────────────
+  release:
+    name: Create Release
+    needs: [read-version, build-server]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/ci-cd')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: timekeeper-server-*
+
+      - name: List artifacts
+        run: find artifacts -type f
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.read-version.outputs.version }}
+          name: TimeKeeper v${{ needs.read-version.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/**/*
