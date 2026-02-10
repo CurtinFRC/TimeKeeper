@@ -132,12 +132,12 @@ class StatsView extends HookConsumerWidget {
                   AttendanceInsightsCards(insights: insights),
                   const SizedBox(height: 24),
 
-                  // Member hours table
-                  StatsMemberHoursTable(memberHours: memberHours),
-                  const SizedBox(height: 24),
-
                   // Overtime flags table
                   StatsOvertimeTable(memberHours: memberHours),
+                  const SizedBox(height: 24),
+
+                  // Member hours table
+                  StatsMemberHoursTable(memberHours: memberHours),
                 ],
               ),
             ),
