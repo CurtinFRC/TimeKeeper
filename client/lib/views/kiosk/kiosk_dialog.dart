@@ -109,8 +109,14 @@ class _KioskDialogContent extends HookConsumerWidget {
               title: Text('${member.firstName} ${member.lastName}$alias'),
               subtitle: Text(member.memberType.name),
               trailing: FilledButton.icon(
-                icon: Icon(checkedIn ? Icons.logout : Icons.login),
-                label: Text(checkedIn ? 'Check Out' : 'Check In'),
+                icon: Icon(
+                  checkedIn ? Icons.logout : Icons.login,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  checkedIn ? 'Check Out' : 'Check In',
+                  style: TextStyle(color: Colors.white),
+                ),
                 style: FilledButton.styleFrom(
                   backgroundColor: checkedIn
                       ? Theme.of(context).colorScheme.error

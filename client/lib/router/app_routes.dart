@@ -15,7 +15,7 @@ import 'package:go_router/go_router.dart';
 /// - railIndex: The index in NavigationRail (null if not in rail)
 enum AppRoute {
   // Public routes
-  home(path: '/', name: 'home', railIndex: null),
+  kiosk(path: '/', name: 'kiosk', railIndex: null),
   login(path: '/login', name: 'login', railIndex: null),
   settings(path: '/settings', name: 'settings', railIndex: null),
 
@@ -24,7 +24,10 @@ enum AppRoute {
     path: '/setup', // Relative to /protected parent
     name: 'setup',
     railIndex: 0,
-  );
+  ),
+
+  users(path: '/users', name: 'users', railIndex: 1),
+  team(path: '/team', name: 'team', railIndex: 2);
 
   const AppRoute({
     required this.path,

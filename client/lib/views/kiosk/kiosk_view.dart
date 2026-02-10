@@ -5,9 +5,9 @@ import 'package:time_keeper/providers/auth_provider.dart';
 import 'package:time_keeper/utils/permissions.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/utils/time.dart';
-import 'package:time_keeper/views/home/checked_in_list.dart';
-import 'package:time_keeper/views/home/kiosk_dialog.dart';
-import 'package:time_keeper/views/home/session_info_bar.dart';
+import 'package:time_keeper/views/kiosk/checked_in_list.dart';
+import 'package:time_keeper/views/kiosk/kiosk_dialog.dart';
+import 'package:time_keeper/views/kiosk/session_info_bar.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -40,12 +40,15 @@ class HomeView extends ConsumerWidget {
       children: [
         if (hasKiosk)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 25),
             child: Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: FilledButton.icon(
-                icon: const Icon(Icons.how_to_reg),
-                label: const Text('Kiosk Check In / Out'),
+                icon: const Icon(Icons.how_to_reg, color: Colors.white),
+                label: const Text(
+                  'Kiosk Check In / Out',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   KioskDialog(sessions: unfinishedSessions).show(context);
                 },

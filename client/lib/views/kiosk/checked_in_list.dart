@@ -4,8 +4,8 @@ import 'package:time_keeper/generated/common/common.pb.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
 import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/team_member_provider.dart';
-import 'package:time_keeper/views/home/team_member_header.dart';
-import 'package:time_keeper/views/home/team_member_row.dart';
+import 'package:time_keeper/views/kiosk/team_member_header.dart';
+import 'package:time_keeper/views/kiosk/team_member_row.dart';
 import 'package:time_keeper/widgets/animated/infinite_vertical_list.dart';
 
 class CheckedInMember {
@@ -66,11 +66,16 @@ class CheckedInList extends ConsumerWidget {
               childHeight: childHeight,
               children: () {
                 int index = 0;
+                final isDark = Theme.of(context).brightness == Brightness.dark;
                 return checkedInList.map((member) {
                   final i = index++;
-                  Color? rowColor = i % 2 == 0
-                      ? Theme.of(context).colorScheme.surface
-                      : Theme.of(context).colorScheme.surfaceContainerHighest;
+                  final rowColor = i % 2 == 0
+                      ? (isDark
+                            ? Colors.white.withValues(alpha: 0.03)
+                            : Colors.black.withValues(alpha: 0.02))
+                      : (isDark
+                            ? Colors.white.withValues(alpha: 0.07)
+                            : Colors.black.withValues(alpha: 0.05));
                   return Container(
                     height: childHeight,
                     decoration: BoxDecoration(color: rowColor),

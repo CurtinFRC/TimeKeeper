@@ -6,7 +6,7 @@ extension TimestampConversion on Timestamp {
     return DateTime.fromMillisecondsSinceEpoch(
       seconds.toInt() * 1000,
       isUtc: true,
-    );
+    ).toLocal();
   }
 }
 

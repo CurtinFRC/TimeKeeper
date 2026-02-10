@@ -1350,6 +1350,45 @@ pub struct StreamMentorsResponse {
     #[prost(message, repeated, tag = "1")]
     pub mentors: ::prost::alloc::vec::Vec<TeamMemberResponse>,
 }
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateTeamMemberRequest {
+    #[prost(string, tag = "1")]
+    pub first_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub last_name: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::db::TeamMemberType", tag = "3")]
+    pub member_type: i32,
+    #[prost(string, optional, tag = "4")]
+    pub alias: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "5")]
+    pub secondary_alias: ::core::option::Option<::prost::alloc::string::String>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateTeamMemberResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateTeamMemberRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub first_name: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub last_name: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::db::TeamMemberType", tag = "4")]
+    pub member_type: i32,
+    #[prost(string, optional, tag = "5")]
+    pub alias: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "6")]
+    pub secondary_alias: ::core::option::Option<::prost::alloc::string::String>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateTeamMemberResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteTeamMemberRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteTeamMemberResponse {}
 /// Generated client implementations.
 pub mod team_member_service_client {
     #![allow(
@@ -1635,6 +1674,78 @@ pub mod team_member_service_client {
                 .insert(GrpcMethod::new("tk.api.TeamMemberService", "StreamMentors"));
             self.inner.server_streaming(req, path, codec).await
         }
+        pub async fn create_team_member(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateTeamMemberResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.TeamMemberService/CreateTeamMember",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.TeamMemberService", "CreateTeamMember"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn update_team_member(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateTeamMemberResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.TeamMemberService/UpdateTeamMember",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.TeamMemberService", "UpdateTeamMember"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn delete_team_member(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteTeamMemberResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.TeamMemberService/DeleteTeamMember",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.TeamMemberService", "DeleteTeamMember"));
+            self.inner.unary(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -1725,6 +1836,27 @@ pub mod team_member_service_server {
             request: tonic::Request<super::StreamMentorsRequest>,
         ) -> std::result::Result<
             tonic::Response<Self::StreamMentorsStream>,
+            tonic::Status,
+        >;
+        async fn create_team_member(
+            &self,
+            request: tonic::Request<super::CreateTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateTeamMemberResponse>,
+            tonic::Status,
+        >;
+        async fn update_team_member(
+            &self,
+            request: tonic::Request<super::UpdateTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateTeamMemberResponse>,
+            tonic::Status,
+        >;
+        async fn delete_team_member(
+            &self,
+            request: tonic::Request<super::DeleteTeamMemberRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteTeamMemberResponse>,
             tonic::Status,
         >;
     }
@@ -2181,6 +2313,153 @@ pub mod team_member_service_server {
                     };
                     Box::pin(fut)
                 }
+                "/tk.api.TeamMemberService/CreateTeamMember" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateTeamMemberSvc<T: TeamMemberService>(pub Arc<T>);
+                    impl<
+                        T: TeamMemberService,
+                    > tonic::server::UnaryService<super::CreateTeamMemberRequest>
+                    for CreateTeamMemberSvc<T> {
+                        type Response = super::CreateTeamMemberResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateTeamMemberRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as TeamMemberService>::create_team_member(
+                                        &inner,
+                                        request,
+                                    )
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = CreateTeamMemberSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.TeamMemberService/UpdateTeamMember" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateTeamMemberSvc<T: TeamMemberService>(pub Arc<T>);
+                    impl<
+                        T: TeamMemberService,
+                    > tonic::server::UnaryService<super::UpdateTeamMemberRequest>
+                    for UpdateTeamMemberSvc<T> {
+                        type Response = super::UpdateTeamMemberResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateTeamMemberRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as TeamMemberService>::update_team_member(
+                                        &inner,
+                                        request,
+                                    )
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = UpdateTeamMemberSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.TeamMemberService/DeleteTeamMember" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteTeamMemberSvc<T: TeamMemberService>(pub Arc<T>);
+                    impl<
+                        T: TeamMemberService,
+                    > tonic::server::UnaryService<super::DeleteTeamMemberRequest>
+                    for DeleteTeamMemberSvc<T> {
+                        type Response = super::DeleteTeamMemberResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteTeamMemberRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as TeamMemberService>::delete_team_member(
+                                        &inner,
+                                        request,
+                                    )
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = DeleteTeamMemberSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
                 _ => {
                     Box::pin(async move {
                         let mut response = http::Response::new(
@@ -2246,6 +2525,53 @@ pub struct UpdateAdminPasswordRequest {
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct UpdateAdminPasswordResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UserResponse {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::common::Role", repeated, tag = "3")]
+    pub roles: ::prost::alloc::vec::Vec<i32>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct StreamUsersRequest {}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StreamUsersResponse {
+    #[prost(message, repeated, tag = "1")]
+    pub users: ::prost::alloc::vec::Vec<UserResponse>,
+}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateUserRequest {
+    #[prost(string, tag = "1")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub password: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::common::Role", repeated, tag = "3")]
+    pub roles: ::prost::alloc::vec::Vec<i32>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateUserResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateUserRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub username: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub password: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::common::Role", repeated, tag = "4")]
+    pub roles: ::prost::alloc::vec::Vec<i32>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateUserResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteUserRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteUserResponse {}
 /// Generated client implementations.
 pub mod user_service_client {
     #![allow(
@@ -2403,6 +2729,102 @@ pub mod user_service_client {
                 .insert(GrpcMethod::new("tk.api.UserService", "UpdateAdminPassword"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn stream_users(
+            &mut self,
+            request: impl tonic::IntoRequest<super::StreamUsersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<tonic::codec::Streaming<super::StreamUsersResponse>>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.UserService/StreamUsers",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.UserService", "StreamUsers"));
+            self.inner.server_streaming(req, path, codec).await
+        }
+        pub async fn create_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.UserService/CreateUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.UserService", "CreateUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn update_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.UserService/UpdateUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.UserService", "UpdateUser"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn delete_user(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteUserResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.UserService/DeleteUser",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.UserService", "DeleteUser"));
+            self.inner.unary(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -2434,6 +2856,40 @@ pub mod user_service_server {
             request: tonic::Request<super::UpdateAdminPasswordRequest>,
         ) -> std::result::Result<
             tonic::Response<super::UpdateAdminPasswordResponse>,
+            tonic::Status,
+        >;
+        /// Server streaming response type for the StreamUsers method.
+        type StreamUsersStream: tonic::codegen::tokio_stream::Stream<
+                Item = std::result::Result<super::StreamUsersResponse, tonic::Status>,
+            >
+            + std::marker::Send
+            + 'static;
+        async fn stream_users(
+            &self,
+            request: tonic::Request<super::StreamUsersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<Self::StreamUsersStream>,
+            tonic::Status,
+        >;
+        async fn create_user(
+            &self,
+            request: tonic::Request<super::CreateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateUserResponse>,
+            tonic::Status,
+        >;
+        async fn update_user(
+            &self,
+            request: tonic::Request<super::UpdateUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateUserResponse>,
+            tonic::Status,
+        >;
+        async fn delete_user(
+            &self,
+            request: tonic::Request<super::DeleteUserRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteUserResponse>,
             tonic::Status,
         >;
     }
@@ -2632,6 +3088,187 @@ pub mod user_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = UpdateAdminPasswordSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.UserService/StreamUsers" => {
+                    #[allow(non_camel_case_types)]
+                    struct StreamUsersSvc<T: UserService>(pub Arc<T>);
+                    impl<
+                        T: UserService,
+                    > tonic::server::ServerStreamingService<super::StreamUsersRequest>
+                    for StreamUsersSvc<T> {
+                        type Response = super::StreamUsersResponse;
+                        type ResponseStream = T::StreamUsersStream;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::ResponseStream>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::StreamUsersRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserService>::stream_users(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = StreamUsersSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.server_streaming(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.UserService/CreateUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateUserSvc<T: UserService>(pub Arc<T>);
+                    impl<
+                        T: UserService,
+                    > tonic::server::UnaryService<super::CreateUserRequest>
+                    for CreateUserSvc<T> {
+                        type Response = super::CreateUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserService>::create_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = CreateUserSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.UserService/UpdateUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateUserSvc<T: UserService>(pub Arc<T>);
+                    impl<
+                        T: UserService,
+                    > tonic::server::UnaryService<super::UpdateUserRequest>
+                    for UpdateUserSvc<T> {
+                        type Response = super::UpdateUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserService>::update_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = UpdateUserSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.UserService/DeleteUser" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteUserSvc<T: UserService>(pub Arc<T>);
+                    impl<
+                        T: UserService,
+                    > tonic::server::UnaryService<super::DeleteUserRequest>
+                    for DeleteUserSvc<T> {
+                        type Response = super::DeleteUserResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteUserRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as UserService>::delete_user(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = DeleteUserSvc(inner);
                         let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
