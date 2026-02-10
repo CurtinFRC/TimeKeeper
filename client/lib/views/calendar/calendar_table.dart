@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/models/session_status.dart';
 import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/team_member_provider.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/utils/time.dart';
 import 'package:time_keeper/views/sessions/session_detail_dialog.dart';
-import 'package:time_keeper/views/sessions/session_helpers.dart';
+import 'package:time_keeper/widgets/member_count.dart';
+import 'package:time_keeper/widgets/status_chip.dart';
 import 'package:time_keeper/widgets/tables/base_table.dart';
 
 class CalendarTable extends ConsumerWidget {
@@ -71,13 +74,13 @@ class CalendarTable extends ConsumerWidget {
             BaseTableCell(child: Text(formatDuration(duration))),
             BaseTableCell(child: Text(locationName)),
             BaseTableCell(
-              child: _MemberCount(
+              child: MemberCount(
                 total: memberCount,
                 status: status,
                 session: session,
               ),
             ),
-            BaseTableCell(child: _StatusChip(status: status)),
+            BaseTableCell(child: SessionStatusChip(status: status)),
             BaseTableCell(
               child: IconButton(
                 icon: Icon(
@@ -99,58 +102,6 @@ class CalendarTable extends ConsumerWidget {
           ],
         );
       }).toList(),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final SessionStatus status;
-
-  const _StatusChip({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      label: Text(
-        statusLabel(status),
-        style: const TextStyle(color: Colors.white, fontSize: 12),
-      ),
-      backgroundColor: statusColor(status),
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-    );
-  }
-}
-
-class _MemberCount extends StatelessWidget {
-  final int total;
-  final SessionStatus status;
-  final Session session;
-
-  const _MemberCount({
-    required this.total,
-    required this.status,
-    required this.session,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final activeCount = session.memberSessions
-        .where((ms) => ms.hasCheckInTime() && !ms.hasCheckOutTime())
-        .length;
-    final text =
-        status == SessionStatus.current || status == SessionStatus.overtime
-        ? '$activeCount / $total'
-        : '$total';
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.people, size: 16, color: theme.colorScheme.onSurfaceVariant),
-        const SizedBox(width: 4),
-        Text(text),
-      ],
     );
   }
 }

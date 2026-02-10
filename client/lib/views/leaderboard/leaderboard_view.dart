@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time_keeper/generated/api/stats.pb.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
 import 'package:time_keeper/providers/stats_provider.dart';
+import 'package:time_keeper/utils/formatting.dart';
 
 class LeaderboardView extends ConsumerWidget {
   const LeaderboardView({super.key});
@@ -167,7 +168,7 @@ class _LeaderboardRow extends StatelessWidget {
           flex: 2,
           child: Center(
             child: Text(
-              _formatSecs(entry.totalSecs),
+              formatSecsAsHoursMinutes(entry.totalSecs),
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
@@ -192,11 +193,11 @@ class _HoursCell extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(_formatSecs(bucket.regularSecs)),
+          Text(formatSecsAsHoursMinutes(bucket.regularSecs)),
           if (bucket.overtimeSecs > 0) ...[
             const SizedBox(width: 4),
             Text(
-              '+${_formatSecs(bucket.overtimeSecs)}',
+              '+${formatSecsAsHoursMinutes(bucket.overtimeSecs)}',
               style: TextStyle(color: Colors.red.shade300, fontSize: 12),
             ),
           ],
@@ -204,13 +205,4 @@ class _HoursCell extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatSecs(double secs) {
-  final totalMinutes = (secs / 60).round();
-  final hours = totalMinutes ~/ 60;
-  final minutes = totalMinutes % 60;
-  if (hours > 0) return '${hours}h ${minutes}m';
-  if (minutes > 0) return '${minutes}m';
-  return '0m';
 }

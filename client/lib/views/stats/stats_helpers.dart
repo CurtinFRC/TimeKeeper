@@ -1,56 +1,11 @@
 import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/models/stats_data.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/utils/time.dart';
 
-/// Time range filter for the stats dashboard.
-enum StatsRange { day, week, month, all }
-
-String statsRangeLabel(StatsRange range) {
-  switch (range) {
-    case StatsRange.day:
-      return 'Today';
-    case StatsRange.week:
-      return 'This Week';
-    case StatsRange.month:
-      return 'This Month';
-    case StatsRange.all:
-      return 'All Time';
-  }
-}
-
-/// Filter sessions by time range based on session start time.
-Map<String, Session> filterSessionsByRange(
-  Map<String, Session> sessions,
-  StatsRange range,
-) {
-  if (range == StatsRange.all) return sessions;
-
-  final now = DateTime.now();
-  late final DateTime start;
-  late final DateTime end;
-
-  switch (range) {
-    case StatsRange.day:
-      start = DateTime(now.year, now.month, now.day);
-      end = DateTime(now.year, now.month, now.day + 1);
-    case StatsRange.week:
-      final monday = now.subtract(Duration(days: now.weekday - 1));
-      start = DateTime(monday.year, monday.month, monday.day);
-      end = DateTime(monday.year, monday.month, monday.day + 7);
-    case StatsRange.month:
-      start = DateTime(now.year, now.month, 1);
-      end = DateTime(now.year, now.month + 1, 1);
-    case StatsRange.all:
-      return sessions;
-  }
-
-  return Map.fromEntries(
-    sessions.entries.where((entry) {
-      if (!entry.value.hasStartTime()) return false;
-      final dt = entry.value.startTime.toDateTime();
-      return !dt.isBefore(start) && dt.isBefore(end);
-    }),
-  );
-}
+export 'package:time_keeper/models/stats_data.dart';
+export 'package:time_keeper/utils/formatting.dart'
+    show formatSecsAsHoursMinutes;
 
 /// Regular vs overtime for a single member session.
 ({double regularSecs, double overtimeSecs}) computeMemberSessionHours(
@@ -74,28 +29,6 @@ Map<String, Session> filterSessionsByRange(
       : 0.0;
 
   return (regularSecs: regularSecs, overtimeSecs: totalSecs - regularSecs);
-}
-
-// -- Per-member aggregation --
-
-class MemberHoursData {
-  final String memberId;
-  final String name;
-  final TeamMemberType memberType;
-  double regularSecs;
-  double overtimeSecs;
-
-  MemberHoursData({
-    required this.memberId,
-    required this.name,
-    required this.memberType,
-    this.regularSecs = 0,
-    this.overtimeSecs = 0,
-  });
-
-  double get totalSecs => regularSecs + overtimeSecs;
-  double get overtimePercent =>
-      totalSecs > 0 ? (overtimeSecs / totalSecs) * 100 : 0;
 }
 
 Map<String, MemberHoursData> computeMemberHours(
@@ -135,20 +68,6 @@ Map<String, MemberHoursData> computeMemberHours(
   return result;
 }
 
-// -- Per-day aggregation (for bar chart) --
-
-class DayHoursData {
-  final DateTime date;
-  double regularSecs;
-  double overtimeSecs;
-
-  DayHoursData({
-    required this.date,
-    this.regularSecs = 0,
-    this.overtimeSecs = 0,
-  });
-}
-
 List<DayHoursData> computeDailyHours(Map<String, Session> sessions) {
   final byDay = <String, DayHoursData>{};
 
@@ -174,15 +93,6 @@ List<DayHoursData> computeDailyHours(Map<String, Session> sessions) {
   }
 
   return byDay.values.toList()..sort((a, b) => a.date.compareTo(b.date));
-}
-
-// -- Per-day attendance count (for people-per-day chart) --
-
-class DayAttendanceData {
-  final DateTime date;
-  int uniqueMembers;
-
-  DayAttendanceData({required this.date, this.uniqueMembers = 0});
 }
 
 List<DayAttendanceData> computeDailyAttendance(Map<String, Session> sessions) {
@@ -212,26 +122,6 @@ List<DayAttendanceData> computeDailyAttendance(Map<String, Session> sessions) {
           .toList()
         ..sort((a, b) => a.date.compareTo(b.date));
   return result;
-}
-
-// -- Day detail: members who checked in on a specific day --
-
-class DayMemberDetail {
-  final String memberId;
-  final String name;
-  final TeamMemberType memberType;
-  final double regularSecs;
-  final double overtimeSecs;
-
-  DayMemberDetail({
-    required this.memberId,
-    required this.name,
-    required this.memberType,
-    required this.regularSecs,
-    required this.overtimeSecs,
-  });
-
-  double get totalSecs => regularSecs + overtimeSecs;
 }
 
 List<DayMemberDetail> computeDayMemberDetails(
@@ -287,20 +177,6 @@ List<DayMemberDetail> computeDayMemberDetails(
     ..sort((a, b) => b.totalSecs.compareTo(a.totalSecs));
 }
 
-// -- Per-location aggregation (for pie chart) --
-
-class LocationAttendanceData {
-  final String locationId;
-  final String locationName;
-  int checkInCount;
-
-  LocationAttendanceData({
-    required this.locationId,
-    required this.locationName,
-    this.checkInCount = 0,
-  });
-}
-
 List<LocationAttendanceData> computeLocationAttendance(
   Map<String, Session> sessions,
   Map<String, Location> locations,
@@ -326,42 +202,10 @@ List<LocationAttendanceData> computeLocationAttendance(
     ..sort((a, b) => b.checkInCount.compareTo(a.checkInCount));
 }
 
-// -- Attendance insights --
-
-class AttendanceInsights {
-  final String avgCheckInTime;
-  final String avgCheckOutTime;
-  final String avgVisitDuration;
-  final String mostActiveLocation;
-  final String busiestDay;
-  final int uniqueMembers;
-  final double avgAttendancePerSession;
-
-  AttendanceInsights({
-    required this.avgCheckInTime,
-    required this.avgCheckOutTime,
-    required this.avgVisitDuration,
-    required this.mostActiveLocation,
-    required this.busiestDay,
-    required this.uniqueMembers,
-    required this.avgAttendancePerSession,
-  });
-}
-
 AttendanceInsights computeInsights(
   Map<String, Session> sessions,
   Map<String, Location> locations,
 ) {
-  const weekdays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-
   int totalCheckInMinutes = 0;
   int totalCheckOutMinutes = 0;
   int checkInCount = 0;
@@ -399,13 +243,13 @@ AttendanceInsights computeInsights(
   String avgCheckIn = '-';
   if (checkInCount > 0) {
     final avgMins = totalCheckInMinutes ~/ checkInCount;
-    avgCheckIn = _formatTimeOfDay(avgMins ~/ 60, avgMins % 60);
+    avgCheckIn = formatTimeOfDay(avgMins ~/ 60, avgMins % 60);
   }
 
   String avgCheckOut = '-';
   if (checkOutCount > 0) {
     final avgMins = totalCheckOutMinutes ~/ checkOutCount;
-    avgCheckOut = _formatTimeOfDay(avgMins ~/ 60, avgMins % 60);
+    avgCheckOut = formatTimeOfDay(avgMins ~/ 60, avgMins % 60);
   }
 
   String avgVisit = '-';
@@ -438,7 +282,7 @@ AttendanceInsights computeInsights(
     final topDay = dayOfWeekCounts.entries
         .reduce((a, b) => a.value >= b.value ? a : b)
         .key;
-    busiest = weekdays[topDay - 1];
+    busiest = weekdayFull[topDay - 1];
   }
 
   final avgAttendance = sessions.isNotEmpty
@@ -456,18 +300,37 @@ AttendanceInsights computeInsights(
   );
 }
 
-String _formatTimeOfDay(int hour, int minute) {
-  final h = hour % 12 == 0 ? 12 : hour % 12;
-  final m = minute.toString().padLeft(2, '0');
-  final period = hour < 12 ? 'AM' : 'PM';
-  return '$h:$m $period';
-}
+/// Filter sessions by time range based on session start time.
+Map<String, Session> filterSessionsByRange(
+  Map<String, Session> sessions,
+  StatsRange range,
+) {
+  if (range == StatsRange.all) return sessions;
 
-String formatSecsAsHoursMinutes(double secs) {
-  final totalMinutes = (secs / 60).round();
-  final hours = totalMinutes ~/ 60;
-  final minutes = totalMinutes % 60;
-  if (hours > 0) return '${hours}h ${minutes}m';
-  if (minutes > 0) return '${minutes}m';
-  return '0m';
+  final now = DateTime.now();
+  late final DateTime start;
+  late final DateTime end;
+
+  switch (range) {
+    case StatsRange.day:
+      start = DateTime(now.year, now.month, now.day);
+      end = DateTime(now.year, now.month, now.day + 1);
+    case StatsRange.week:
+      final monday = now.subtract(Duration(days: now.weekday - 1));
+      start = DateTime(monday.year, monday.month, monday.day);
+      end = DateTime(monday.year, monday.month, monday.day + 7);
+    case StatsRange.month:
+      start = DateTime(now.year, now.month, 1);
+      end = DateTime(now.year, now.month + 1, 1);
+    case StatsRange.all:
+      return sessions;
+  }
+
+  return Map.fromEntries(
+    sessions.entries.where((entry) {
+      if (!entry.value.hasStartTime()) return false;
+      final dt = entry.value.startTime.toDateTime();
+      return !dt.isBefore(start) && dt.isBefore(end);
+    }),
+  );
 }

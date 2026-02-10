@@ -6,6 +6,7 @@ import 'package:time_keeper/helpers/grpc_call_wrapper.dart';
 import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/providers/team_member_provider.dart';
+import 'package:time_keeper/helpers/session_helper.dart';
 import 'package:time_keeper/views/team/check_in_out_button.dart';
 import 'package:time_keeper/views/team/member_type_chip.dart';
 import 'package:time_keeper/views/team/team_member_dialog.dart';
@@ -45,19 +46,6 @@ class TeamView extends ConsumerWidget {
       showResultDialog: true,
       successMessage: Text('Deleted ${ids.length} members'),
     ).show(context);
-  }
-
-  bool _isCheckedIn(String memberId, Map<String, Session> sessions) {
-    for (final session in sessions.values) {
-      for (final ms in session.memberSessions) {
-        if (ms.teamMemberId == memberId &&
-            ms.hasCheckInTime() &&
-            !ms.hasCheckOutTime()) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   @override
@@ -173,7 +161,7 @@ class TeamView extends ConsumerWidget {
               editRows: sorted.map((entry) {
                 final id = entry.key;
                 final member = entry.value;
-                final checkedIn = _isCheckedIn(id, sessions);
+                final checkedIn = isMemberCheckedIn(id, sessions.values);
 
                 return EditTableRow(
                   key: ValueKey(id),

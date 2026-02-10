@@ -1,8 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/views/stats/stats_helpers.dart';
-
-const _weekdayAbbr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 class StatsHoursChart extends StatelessWidget {
   final List<DayHoursData> dailyHours;
@@ -130,7 +129,7 @@ class StatsHoursChart extends StatelessWidget {
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Text(
-                                    '${_weekdayAbbr[d.weekday - 1]} ${d.day}',
+                                    '${weekdayAbbr[d.weekday - 1]} ${d.day}',
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: textColor,

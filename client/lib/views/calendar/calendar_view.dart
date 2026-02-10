@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:time_keeper/models/session_status.dart';
 import 'package:time_keeper/providers/session_provider.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/utils/time.dart';
 import 'package:time_keeper/views/calendar/calendar_table.dart';
 import 'package:time_keeper/views/sessions/session_calendar.dart';
-import 'package:time_keeper/views/sessions/session_helpers.dart';
 
 class CalendarView extends HookConsumerWidget {
   const CalendarView({super.key});

@@ -1,30 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/views/stats/stats_helpers.dart';
-
-const _weekdays = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
-];
-const _months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+import 'package:time_keeper/widgets/tables/header_text.dart';
 
 class StatsDayDetail extends StatelessWidget {
   final DateTime selectedDay;
@@ -49,8 +27,8 @@ class StatsDayDetail extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.07)
         : Colors.black.withValues(alpha: 0.05);
 
-    final weekday = _weekdays[selectedDay.weekday - 1];
-    final month = _months[selectedDay.month - 1];
+    final weekday = weekdayFull[selectedDay.weekday - 1];
+    final month = monthAbbr[selectedDay.month - 1];
     final dateStr = '$weekday, $month ${selectedDay.day}';
 
     double totalRegular = 0;
@@ -146,11 +124,11 @@ class StatsDayDetail extends StatelessWidget {
                 ),
                 child: const Row(
                   children: [
-                    Expanded(flex: 3, child: _HeaderText('Member')),
-                    Expanded(flex: 2, child: _HeaderText('Type')),
-                    Expanded(flex: 2, child: _HeaderText('Regular')),
-                    Expanded(flex: 2, child: _HeaderText('Overtime')),
-                    Expanded(flex: 2, child: _HeaderText('Total')),
+                    Expanded(flex: 3, child: TableHeaderText('Member')),
+                    Expanded(flex: 2, child: TableHeaderText('Type')),
+                    Expanded(flex: 2, child: TableHeaderText('Regular')),
+                    Expanded(flex: 2, child: TableHeaderText('Overtime')),
+                    Expanded(flex: 2, child: TableHeaderText('Total')),
                   ],
                 ),
               ),
@@ -201,23 +179,6 @@ class StatsDayDetail extends StatelessWidget {
             ],
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _HeaderText extends StatelessWidget {
-  final String text;
-  const _HeaderText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontWeight: FontWeight.w600,
-        color: Colors.white,
-        fontSize: 13,
       ),
     );
   }

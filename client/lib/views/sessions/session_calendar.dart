@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/models/session_status.dart';
 import 'package:time_keeper/utils/time.dart';
-import 'package:time_keeper/views/sessions/session_helpers.dart';
 
 class SessionCalendar extends HookWidget {
   final Map<String, Session> sessions;

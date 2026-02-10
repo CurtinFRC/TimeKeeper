@@ -7,7 +7,7 @@ import 'package:time_keeper/helpers/grpc_call_wrapper.dart';
 import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/utils/time.dart';
-import 'package:time_keeper/views/sessions/session_helpers.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/widgets/dialogs/confirm_dialog.dart';
 import 'package:time_keeper/widgets/dialogs/popup_dialog.dart';
 

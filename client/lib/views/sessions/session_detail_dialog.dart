@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/models/session_status.dart';
+import 'package:time_keeper/utils/formatting.dart';
 import 'package:time_keeper/utils/time.dart';
-import 'package:time_keeper/views/sessions/session_helpers.dart';
 import 'package:time_keeper/widgets/dialogs/popup_dialog.dart';
 
 void showSessionDetailDialog(

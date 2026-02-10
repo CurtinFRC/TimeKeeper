@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:time_keeper/generated/db/db.pb.dart';
 import 'package:time_keeper/views/stats/stats_helpers.dart';
+import 'package:time_keeper/widgets/tables/header_text.dart';
 
 class StatsMemberHoursTable extends StatelessWidget {
   final Map<String, MemberHoursData> memberHours;
@@ -74,12 +75,12 @@ class StatsMemberHoursTable extends StatelessWidget {
                 ),
                 child: const Row(
                   children: [
-                    SizedBox(width: 32, child: _HeaderText('#')),
-                    Expanded(flex: 3, child: _HeaderText('Member')),
-                    Expanded(flex: 2, child: _HeaderText('Type')),
-                    Expanded(flex: 2, child: _HeaderText('Regular')),
-                    Expanded(flex: 2, child: _HeaderText('Overtime')),
-                    Expanded(flex: 2, child: _HeaderText('Total')),
+                    SizedBox(width: 32, child: TableHeaderText('#')),
+                    Expanded(flex: 3, child: TableHeaderText('Member')),
+                    Expanded(flex: 2, child: TableHeaderText('Type')),
+                    Expanded(flex: 2, child: TableHeaderText('Regular')),
+                    Expanded(flex: 2, child: TableHeaderText('Overtime')),
+                    Expanded(flex: 2, child: TableHeaderText('Total')),
                   ],
                 ),
               ),
@@ -152,23 +153,6 @@ class StatsMemberHoursTable extends StatelessWidget {
             ],
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _HeaderText extends StatelessWidget {
-  final String text;
-  const _HeaderText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontWeight: FontWeight.w600,
-        color: Colors.white,
-        fontSize: 13,
       ),
     );
   }
