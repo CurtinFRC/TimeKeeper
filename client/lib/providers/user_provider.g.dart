@@ -10,7 +10,7 @@ part of 'user_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(usersStream)
-const usersStreamProvider = UsersStreamProvider._();
+final usersStreamProvider = UsersStreamProvider._();
 
 final class UsersStreamProvider
     extends
@@ -22,7 +22,7 @@ final class UsersStreamProvider
     with
         $FutureModifier<StreamUsersResponse>,
         $StreamProvider<StreamUsersResponse> {
-  const UsersStreamProvider._()
+  UsersStreamProvider._()
     : super(
         from: null,
         argument: null,
@@ -51,11 +51,11 @@ final class UsersStreamProvider
 String _$usersStreamHash() => r'1572fee3a306bf9bebb41dd6912ce72a17bc9aa4';
 
 @ProviderFor(Users)
-const usersProvider = UsersProvider._();
+final usersProvider = UsersProvider._();
 
 final class UsersProvider
     extends $NotifierProvider<Users, Map<String, UserResponse>> {
-  const UsersProvider._()
+  UsersProvider._()
     : super(
         from: null,
         argument: null,
@@ -89,7 +89,6 @@ abstract class _$Users extends $Notifier<Map<String, UserResponse>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref as $Ref<Map<String, UserResponse>, Map<String, UserResponse>>;
     final element =
@@ -100,6 +99,6 @@ abstract class _$Users extends $Notifier<Map<String, UserResponse>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

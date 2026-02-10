@@ -10,7 +10,7 @@ part of 'session_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(sessionService)
-const sessionServiceProvider = SessionServiceProvider._();
+final sessionServiceProvider = SessionServiceProvider._();
 
 final class SessionServiceProvider
     extends
@@ -20,7 +20,7 @@ final class SessionServiceProvider
           SessionServiceClient
         >
     with $Provider<SessionServiceClient> {
-  const SessionServiceProvider._()
+  SessionServiceProvider._()
     : super(
         from: null,
         argument: null,
@@ -57,7 +57,7 @@ final class SessionServiceProvider
 String _$sessionServiceHash() => r'98770a0f26c90f5472060e01c54ccc583fd5573e';
 
 @ProviderFor(sessionsStream)
-const sessionsStreamProvider = SessionsStreamProvider._();
+final sessionsStreamProvider = SessionsStreamProvider._();
 
 final class SessionsStreamProvider
     extends
@@ -69,7 +69,7 @@ final class SessionsStreamProvider
     with
         $FutureModifier<StreamSessionsResponse>,
         $StreamProvider<StreamSessionsResponse> {
-  const SessionsStreamProvider._()
+  SessionsStreamProvider._()
     : super(
         from: null,
         argument: null,
@@ -98,11 +98,11 @@ final class SessionsStreamProvider
 String _$sessionsStreamHash() => r'2ee228c811e72583e7463ee56be412866ae5c22e';
 
 @ProviderFor(Sessions)
-const sessionsProvider = SessionsProvider._();
+final sessionsProvider = SessionsProvider._();
 
 final class SessionsProvider
     extends $NotifierProvider<Sessions, Map<String, Session>> {
-  const SessionsProvider._()
+  SessionsProvider._()
     : super(
         from: null,
         argument: null,
@@ -136,7 +136,6 @@ abstract class _$Sessions extends $Notifier<Map<String, Session>> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<Map<String, Session>, Map<String, Session>>;
     final element =
         ref.element
@@ -146,6 +145,6 @@ abstract class _$Sessions extends $Notifier<Map<String, Session>> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }
