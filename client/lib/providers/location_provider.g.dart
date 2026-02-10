@@ -75,7 +75,7 @@ final class LocationsStreamProvider
         argument: null,
         retry: null,
         name: r'locationsStreamProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -95,7 +95,7 @@ final class LocationsStreamProvider
   }
 }
 
-String _$locationsStreamHash() => r'2d2c1bed2910f88823319959dcae6d02f831a2b3';
+String _$locationsStreamHash() => r'ed80c38db4fdb74855e7316cd049504fcd2beedf';
 
 @ProviderFor(Locations)
 final locationsProvider = LocationsProvider._();
@@ -129,7 +129,7 @@ final class LocationsProvider
   }
 }
 
-String _$locationsHash() => r'46ca22afd827e796af6dea17c5f22c7bd8bc1842';
+String _$locationsHash() => r'66ac65cc17afe87eb4b4cac70a90904f89db9364';
 
 abstract class _$Locations extends $Notifier<Map<String, Location>> {
   Map<String, Location> build();

@@ -28,7 +28,7 @@ final class UsersStreamProvider
         argument: null,
         retry: null,
         name: r'usersStreamProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,7 +48,7 @@ final class UsersStreamProvider
   }
 }
 
-String _$usersStreamHash() => r'1572fee3a306bf9bebb41dd6912ce72a17bc9aa4';
+String _$usersStreamHash() => r'01945443933ce7ff85de037f0dc72deb83afac9a';
 
 @ProviderFor(Users)
 final usersProvider = UsersProvider._();
@@ -82,7 +82,7 @@ final class UsersProvider
   }
 }
 
-String _$usersHash() => r'ac8a22eec86df803d070616ac264fcf37ba21a33';
+String _$usersHash() => r'cc987a48d976e7e8dc98bf281dbd3026c1ea70ec';
 
 abstract class _$Users extends $Notifier<Map<String, UserResponse>> {
   Map<String, UserResponse> build();

@@ -75,7 +75,7 @@ final class TeamMembersStreamProvider
         argument: null,
         retry: null,
         name: r'teamMembersStreamProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -95,7 +95,7 @@ final class TeamMembersStreamProvider
   }
 }
 
-String _$teamMembersStreamHash() => r'e39aee18a610b3bc588fae24dfc7b50de8e75228';
+String _$teamMembersStreamHash() => r'849d90bf38645aae20189918c8f2280e2f0b7759';
 
 @ProviderFor(TeamMembers)
 final teamMembersProvider = TeamMembersProvider._();
@@ -129,7 +129,7 @@ final class TeamMembersProvider
   }
 }
 
-String _$teamMembersHash() => r'2567ddff27648f414e133678e4e6b8622ca5b830';
+String _$teamMembersHash() => r'1da976a7ba53d0dbdce124ceccdecbee079308e4';
 
 abstract class _$TeamMembers extends $Notifier<Map<String, TeamMember>> {
   Map<String, TeamMember> build();
@@ -167,7 +167,7 @@ final class StudentTeamMembersProvider
         argument: null,
         retry: null,
         name: r'studentTeamMembersProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -196,7 +196,7 @@ final class StudentTeamMembersProvider
 }
 
 String _$studentTeamMembersHash() =>
-    r'195cd4e0554541f1ec5efe93bf8e05339364b91e';
+    r'b5f4bad9fcc8b430290ea1ba212df2de77d94f17';
 
 @ProviderFor(mentorTeamMembers)
 final mentorTeamMembersProvider = MentorTeamMembersProvider._();
@@ -215,7 +215,7 @@ final class MentorTeamMembersProvider
         argument: null,
         retry: null,
         name: r'mentorTeamMembersProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -243,4 +243,4 @@ final class MentorTeamMembersProvider
   }
 }
 
-String _$mentorTeamMembersHash() => r'60a9fa6af945f71d9e3d53043ded6353b1eae4e8';
+String _$mentorTeamMembersHash() => r'8d22e36a1b928df7955493ff033b95b0986340fe';

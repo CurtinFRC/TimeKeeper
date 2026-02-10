@@ -75,7 +75,7 @@ final class SessionsStreamProvider
         argument: null,
         retry: null,
         name: r'sessionsStreamProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -95,7 +95,7 @@ final class SessionsStreamProvider
   }
 }
 
-String _$sessionsStreamHash() => r'2ee228c811e72583e7463ee56be412866ae5c22e';
+String _$sessionsStreamHash() => r'66491242b1b9d5156509c8c315562dc2333869cb';
 
 @ProviderFor(Sessions)
 final sessionsProvider = SessionsProvider._();
@@ -129,7 +129,7 @@ final class SessionsProvider
   }
 }
 
-String _$sessionsHash() => r'92ce97ee2e6bc1b1d9f2eeaa4ba50d7b56c0ee08';
+String _$sessionsHash() => r'555df6c37b6ec5b96a8014b40ef71e314d2fd0d1';
 
 abstract class _$Sessions extends $Notifier<Map<String, Session>> {
   Map<String, Session> build();
