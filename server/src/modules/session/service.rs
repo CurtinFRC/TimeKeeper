@@ -45,16 +45,8 @@ impl ScheduledService for SessionService {
         continue;
       }
 
-      let has_hanging = has_checked_in_members(&unfinished[i].1);
-
-      if !has_hanging {
-        // No checked-in members and past end time — mark finished
-        let (id, session) = &mut unfinished[i];
-        session.finished = true;
-        Session::update(id, session)?;
-        log::info!("[SessionService] Marked session {} as finished (no hanging members)", id);
-      } else {
-        // Has hanging members — check if next session is within threshold
+      if has_checked_in_members(&unfinished[i].1) {
+        // Has lingering members — check if next session is within threshold
         let next_start_secs = unfinished.get(i + 1).and_then(|(_, next)| next.start_time.as_ref().map(|t| t.seconds));
 
         let should_force_finish = match next_start_secs {
@@ -71,10 +63,16 @@ impl ScheduledService for SessionService {
           session.finished = true;
           Session::update(id, session)?;
           log::info!(
-            "[SessionService] Force-finished session {} (checked out hanging members, next session approaching)",
+            "[SessionService] Force-finished session {} (checked out lingering members, next session approaching)",
             id
           );
         }
+      } else {
+        // No checked-in members and past end time — mark finished
+        let (id, session) = &mut unfinished[i];
+        session.finished = true;
+        Session::update(id, session)?;
+        log::info!("[SessionService] Marked session {} as finished (no lingering members)", id);
       }
     }
 

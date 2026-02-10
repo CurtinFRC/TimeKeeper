@@ -25,7 +25,7 @@ pub fn get_unfinished_sessions_sorted() -> Result<Vec<(String, Session)>> {
   let all_sessions = Session::get_all()?;
   let mut unfinished: Vec<(String, Session)> =
     all_sessions.into_iter().filter(|(_, s)| !s.finished && s.start_time.is_some()).collect();
-  unfinished.sort_by_key(|(_, s)| s.start_time.as_ref().map(|t| t.seconds).unwrap_or(0));
+  unfinished.sort_by_key(|(_, s)| s.start_time.as_ref().map_or(0, |t| t.seconds));
   Ok(unfinished)
 }
 
@@ -36,14 +36,14 @@ pub fn is_member_checked_in(ms: &TeamMemberSession) -> bool {
 
 /// Check if a session has any members still checked in.
 pub fn has_checked_in_members(session: &Session) -> bool {
-  session.member_sessions.iter().any(|ms| is_member_checked_in(ms))
+  session.member_sessions.iter().any(is_member_checked_in)
 }
 
 /// Check out all lingering members in a session with the given timestamp.
 pub fn check_out_all_members(session: &mut Session, now: &Timestamp) {
   for ms in &mut session.member_sessions {
     if is_member_checked_in(ms) {
-      ms.check_out_time = Some(now.clone());
+      ms.check_out_time = Some(*now);
     }
   }
 }
@@ -55,7 +55,7 @@ pub fn find_check_in_target_index(unfinished: &[(String, Session)], now: &Timest
     Some((_, next_session)) => match &next_session.start_time {
       Some(next_start) => {
         let time_until_next = next_start.seconds - now.seconds;
-        if time_until_next > 0 && time_until_next <= threshold_secs { 1 } else { 0 }
+        usize::from(time_until_next > 0 && time_until_next <= threshold_secs)
       }
       None => 0,
     },
