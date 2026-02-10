@@ -37,9 +37,12 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+      - name: Generate Flutter Icons
+        working-directory: client
+        run: dart run flutter_launcher_icons
       - name: Build Flutter web (release)
         working-directory: client
-        run: flutter build web --release --wasm
+        run: flutter build web --release --wasm --no-web-resources-cdn
       - name: Upload web client artifact
         uses: actions/upload-artifact@v4
         with:
@@ -135,10 +138,116 @@ jobs:
           path: ${{ matrix.artifact }}.${{ matrix.archive }}
           retention-days: 5
 
+  # ── Build client desktop & Android ──────────────────────────────────
+  build-client:
+    name: Build Client (${{ matrix.name }})
+    needs: [read-version]
+    strategy:
+      matrix:
+        include:
+          - name: linux-x86_64
+            runner: ubuntu-latest
+            build-cmd: linux
+            artifact: timekeeper-client-linux-x86_64
+            artifact-path: client/build/linux/x64/release/bundle
+            archive: tar.gz
+          - name: windows-x86_64
+            runner: windows-latest
+            build-cmd: windows
+            artifact: timekeeper-client-windows-x86_64
+            artifact-path: client/build/windows/x64/runner/Release
+            archive: zip
+          - name: macos-x86_64
+            runner: macos-latest
+            build-cmd: macos
+            artifact: timekeeper-client-macos-x86_64
+            artifact-path: client/build/macos/Build/Products/Release
+            archive: zip
+          - name: macos-aarch64
+            runner: macos-latest
+            build-cmd: macos
+            artifact: timekeeper-client-macos-aarch64
+            artifact-path: client/build/macos/Build/Products/Release
+            archive: zip
+          - name: android
+            runner: ubuntu-latest
+            build-cmd: apk
+            artifact: timekeeper-client-android
+            artifact-path: client/build/app/outputs/flutter-apk/app-release.apk
+            archive: none
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      # Android needs Java
+      - name: Setup Java
+        if: matrix.build-cmd == 'apk'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Linux desktop needs build dependencies
+      - name: Install Linux dependencies
+        if: matrix.build-cmd == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev
+
+      - name: Generate Flutter Icons
+        working-directory: client
+        run: dart run flutter_launcher_icons
+
+      - name: Build client (release)
+        working-directory: client
+        run: flutter build ${{ matrix.build-cmd }} --release
+
+      # Archive: tar.gz (Linux)
+      - name: Prepare archive (tar.gz)
+        if: matrix.archive == 'tar.gz'
+        run: |
+          cd ${{ matrix.artifact-path }}
+          tar -czf ${{ github.workspace }}/${{ matrix.artifact }}.tar.gz .
+
+      # Archive: zip (Windows/macOS)
+      - name: Prepare archive (zip - Unix)
+        if: matrix.archive == 'zip' && runner.os != 'Windows'
+        run: |
+          cd "${{ matrix.artifact-path }}"
+          zip -r "${{ github.workspace }}/${{ matrix.artifact }}.zip" .
+
+      - name: Prepare archive (zip - Windows)
+        if: matrix.archive == 'zip' && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "${{ matrix.artifact-path }}\*" -DestinationPath "${{ github.workspace }}\${{ matrix.artifact }}.zip"
+
+      # Upload archived artifact
+      - name: Upload artifact (archived)
+        if: matrix.archive != 'none'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}.${{ matrix.archive }}
+          retention-days: 5
+
+      # Upload APK directly (no archive needed)
+      - name: Upload artifact (apk)
+        if: matrix.archive == 'none'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact-path }}
+          retention-days: 5
+
   # ── Create GitHub Release ───────────────────────────────────────────
   release:
     name: Create Release
-    needs: [read-version, build-server]
+    needs: [read-version, build-server, build-client]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/ci-cd')
     runs-on: ubuntu-latest
     permissions:
@@ -150,7 +259,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: timekeeper-server-*
+          pattern: timekeeper-*
 
       - name: List artifacts
         run: find artifacts -type f
@@ -160,7 +269,7 @@ jobs:
         with:
           tag_name: v${{ needs.read-version.outputs.version }}
           name: TimeKeeper v${{ needs.read-version.outputs.version }}
-          draft: false
+          draft: true
           prerelease: false
           files: |
             artifacts/**/*
