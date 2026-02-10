@@ -832,6 +832,18 @@ pub struct CheckInOutResponse {
     #[prost(bool, tag = "1")]
     pub checked_in: bool,
 }
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CheckInOutRequest {
+    #[prost(string, tag = "1")]
+    pub team_member_id: ::prost::alloc::string::String,
+    #[prost(message, optional, tag = "2")]
+    pub location: ::core::option::Option<super::db::Location>,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CheckInOutResponse {
+    #[prost(bool, tag = "1")]
+    pub checked_in: bool,
+}
 /// Generated client implementations.
 pub mod session_service_client {
     #![allow(
