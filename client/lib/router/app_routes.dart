@@ -27,7 +27,8 @@ enum AppRoute {
   ),
 
   users(path: '/users', name: 'users', railIndex: 1),
-  team(path: '/team', name: 'team', railIndex: 2);
+  team(path: '/team', name: 'team', railIndex: 2),
+  sessions(path: '/sessions', name: 'sessions', railIndex: 3);
 
   const AppRoute({
     required this.path,

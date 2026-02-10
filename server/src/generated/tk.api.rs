@@ -821,6 +821,39 @@ pub struct StreamSessionsResponse {
     pub sync_type: i32,
 }
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateSessionRequest {
+    #[prost(message, optional, tag = "1")]
+    pub start_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(message, optional, tag = "2")]
+    pub end_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(string, tag = "3")]
+    pub location_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct CreateSessionResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateSessionRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(message, optional, tag = "2")]
+    pub start_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(message, optional, tag = "3")]
+    pub end_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(string, tag = "4")]
+    pub location_id: ::prost::alloc::string::String,
+    #[prost(bool, tag = "5")]
+    pub finished: bool,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct UpdateSessionResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteSessionRequest {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DeleteSessionResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct CheckInOutRequest {
     #[prost(string, tag = "1")]
     pub team_member_id: ::prost::alloc::string::String,
@@ -971,6 +1004,78 @@ pub mod session_service_client {
                 .insert(GrpcMethod::new("tk.api.SessionService", "StreamSessions"));
             self.inner.server_streaming(req, path, codec).await
         }
+        pub async fn create_session(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateSessionResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.SessionService/CreateSession",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.SessionService", "CreateSession"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn update_session(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateSessionResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.SessionService/UpdateSession",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.SessionService", "UpdateSession"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn delete_session(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteSessionResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.SessionService/DeleteSession",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.SessionService", "DeleteSession"));
+            self.inner.unary(req, path, codec).await
+        }
         pub async fn check_in_out(
             &mut self,
             request: impl tonic::IntoRequest<super::CheckInOutRequest>,
@@ -1028,6 +1133,27 @@ pub mod session_service_server {
             request: tonic::Request<super::StreamSessionsRequest>,
         ) -> std::result::Result<
             tonic::Response<Self::StreamSessionsStream>,
+            tonic::Status,
+        >;
+        async fn create_session(
+            &self,
+            request: tonic::Request<super::CreateSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::CreateSessionResponse>,
+            tonic::Status,
+        >;
+        async fn update_session(
+            &self,
+            request: tonic::Request<super::UpdateSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::UpdateSessionResponse>,
+            tonic::Status,
+        >;
+        async fn delete_session(
+            &self,
+            request: tonic::Request<super::DeleteSessionRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::DeleteSessionResponse>,
             tonic::Status,
         >;
         async fn check_in_out(
@@ -1202,6 +1328,141 @@ pub mod session_service_server {
                                 max_encoding_message_size,
                             );
                         let res = grpc.server_streaming(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.SessionService/CreateSession" => {
+                    #[allow(non_camel_case_types)]
+                    struct CreateSessionSvc<T: SessionService>(pub Arc<T>);
+                    impl<
+                        T: SessionService,
+                    > tonic::server::UnaryService<super::CreateSessionRequest>
+                    for CreateSessionSvc<T> {
+                        type Response = super::CreateSessionResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::CreateSessionRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as SessionService>::create_session(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = CreateSessionSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.SessionService/UpdateSession" => {
+                    #[allow(non_camel_case_types)]
+                    struct UpdateSessionSvc<T: SessionService>(pub Arc<T>);
+                    impl<
+                        T: SessionService,
+                    > tonic::server::UnaryService<super::UpdateSessionRequest>
+                    for UpdateSessionSvc<T> {
+                        type Response = super::UpdateSessionResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::UpdateSessionRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as SessionService>::update_session(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = UpdateSessionSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.SessionService/DeleteSession" => {
+                    #[allow(non_camel_case_types)]
+                    struct DeleteSessionSvc<T: SessionService>(pub Arc<T>);
+                    impl<
+                        T: SessionService,
+                    > tonic::server::UnaryService<super::DeleteSessionRequest>
+                    for DeleteSessionSvc<T> {
+                        type Response = super::DeleteSessionResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::DeleteSessionRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as SessionService>::delete_session(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = DeleteSessionSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)

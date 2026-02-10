@@ -15,6 +15,8 @@ import 'package:time_keeper/views/login/login_view.dart' deferred as login;
 import 'package:time_keeper/views/setup/setup_view.dart' deferred as setup;
 import 'package:time_keeper/views/settings/settings_view.dart'
     deferred as settings;
+import 'package:time_keeper/views/sessions/session_view.dart'
+    deferred as sessions;
 import 'package:time_keeper/views/team/team_view.dart' deferred as team;
 import 'package:time_keeper/views/users/users_view.dart' deferred as users;
 
@@ -162,6 +164,18 @@ GoRouter router(Ref ref) {
                     libraryKey: AppRoute.team.path,
                     libraryLoader: team.loadLibrary,
                     builder: (context) => team.TeamView(),
+                  ),
+                ),
+              ),
+              GoRoute(
+                name: AppRoute.sessions.name,
+                path: AppRoute.sessions.path,
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  key: state.pageKey,
+                  child: DeferredWidget(
+                    libraryKey: AppRoute.sessions.path,
+                    libraryLoader: sessions.loadLibrary,
+                    builder: (context) => sessions.SessionView(),
                   ),
                 ),
               ),

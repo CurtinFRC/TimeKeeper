@@ -9,7 +9,7 @@ class SetupView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tabController = useTabController(initialLength: 3);
+    final tabController = useTabController(initialLength: 2);
 
     return Column(
       children: [
@@ -18,13 +18,12 @@ class SetupView extends HookConsumerWidget {
           tabs: const [
             Tab(text: 'Session Setup'),
             Tab(text: 'Team Member Setup'),
-            Tab(text: 'Database Setup'),
           ],
         ),
         Expanded(
           child: TabBarView(
             controller: tabController,
-            children: [SessionSetupTab(), MemberSetupTab(), Text('3')],
+            children: [SessionSetupTab(), MemberSetupTab()],
           ),
         ),
       ],
