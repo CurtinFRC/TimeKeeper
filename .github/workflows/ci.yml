@@ -13,29 +13,35 @@ on:
       - ci-cd
 
 jobs:
-  # ── Read version from vars.yml ──────────────────────────────────────
-  read-version:
-    name: Read Version
+  # ── Read variables from vars.yml ────────────────────────────────────
+  read-vars:
+    name: Read Variables
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.parse.outputs.version }}
+      flutter_version: ${{ steps.parse.outputs.flutter_version }}
     steps:
       - uses: actions/checkout@v4
       - name: Parse vars.yml
         id: parse
         run: |
           version=$(grep 'name: tk_version' vars.yml -A1 | grep 'value:' | awk '{print $2}')
+          flutter_version=$(grep 'name: flutter_version' vars.yml -A1 | grep 'value:' | awk '{print $2}')
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "flutter_version=$flutter_version" >> "$GITHUB_OUTPUT"
           echo "Version: $version"
+          echo "Flutter: $flutter_version"
 
   # ── Build Flutter web client ────────────────────────────────────────
   build-web-client:
     name: Build Web Client
+    needs: [read-vars]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: ${{ needs.read-vars.outputs.flutter_version }}
           channel: stable
       - name: Generate Flutter Icons
         working-directory: client
@@ -53,7 +59,7 @@ jobs:
   # ── Build server binaries ───────────────────────────────────────────
   build-server:
     name: Build Server (${{ matrix.name }})
-    needs: [read-version, build-web-client]
+    needs: [read-vars, build-web-client]
     strategy:
       matrix:
         include:
@@ -141,7 +147,7 @@ jobs:
   # ── Build client desktop & Android ──────────────────────────────────
   build-client:
     name: Build Client (${{ matrix.name }})
-    needs: [read-version]
+    needs: [read-vars]
     strategy:
       matrix:
         include:
@@ -181,6 +187,7 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: ${{ needs.read-vars.outputs.flutter_version }}
           channel: stable
 
       # Android needs Java
@@ -247,7 +254,7 @@ jobs:
   # ── Create GitHub Release ───────────────────────────────────────────
   release:
     name: Create Release
-    needs: [read-version, build-server, build-client]
+    needs: [read-vars, build-server, build-client]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/ci-cd')
     runs-on: ubuntu-latest
     permissions:
@@ -267,8 +274,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.read-version.outputs.version }}
-          name: TimeKeeper v${{ needs.read-version.outputs.version }}
+          tag_name: v${{ needs.read-vars.outputs.version }}
+          name: TimeKeeper v${{ needs.read-vars.outputs.version }}
           draft: true
           prerelease: false
           files: |
