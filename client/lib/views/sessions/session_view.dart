@@ -1,15 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:time_keeper/generated/api/session.pbgrpc.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/utils/time.dart';
 import 'package:time_keeper/views/sessions/session_calendar.dart';
 import 'package:time_keeper/views/sessions/session_helpers.dart';
 import 'package:time_keeper/views/sessions/session_stats.dart';
 import 'package:time_keeper/views/sessions/session_table.dart';
+import 'package:time_keeper/widgets/dialogs/confirm_dialog.dart';
+import 'package:time_keeper/widgets/dialogs/snackbar_dialog.dart';
 
 class SessionView extends HookConsumerWidget {
   const SessionView({super.key});
+
+  void _showClearDialog(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> sessions,
+  ) {
+    final ids = sessions.keys.toList();
+    if (ids.isEmpty) {
+      SnackBarDialog.info(message: 'No sessions to delete').show(context);
+      return;
+    }
+
+    ConfirmDialog.warn(
+      title: 'Clear All Sessions',
+      message: Text(
+        'Are you sure you want to delete all sessions? '
+        '(${ids.length} ${ids.length == 1 ? 'session' : 'sessions'})',
+      ),
+      confirmText: 'Delete',
+      onConfirmAsync: () async {
+        final client = ref.read(sessionServiceProvider);
+        for (final id in ids) {
+          await client.deleteSession(DeleteSessionRequest(id: id));
+        }
+      },
+      showResultDialog: true,
+      successMessage: Text('Deleted ${ids.length} sessions'),
+    ).show(context);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,6 +75,15 @@ class SessionView extends HookConsumerWidget {
             children: [
               Text('Sessions', style: theme.textTheme.headlineMedium),
               const Spacer(),
+              OutlinedButton.icon(
+                onPressed: () => _showClearDialog(context, ref, sessions),
+                icon: Icon(Icons.delete_sweep, size: 18, color: Colors.red),
+                label: Text('Clear All', style: TextStyle(color: Colors.red)),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.red),
+                ),
+              ),
+              const SizedBox(width: 12),
               SegmentedButton<bool>(
                 segments: const [
                   ButtonSegment(

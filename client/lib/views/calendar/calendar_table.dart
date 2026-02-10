@@ -1,0 +1,156 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:time_keeper/generated/db/db.pb.dart';
+import 'package:time_keeper/providers/location_provider.dart';
+import 'package:time_keeper/providers/team_member_provider.dart';
+import 'package:time_keeper/utils/time.dart';
+import 'package:time_keeper/views/sessions/session_detail_dialog.dart';
+import 'package:time_keeper/views/sessions/session_helpers.dart';
+import 'package:time_keeper/widgets/tables/base_table.dart';
+
+class CalendarTable extends ConsumerWidget {
+  final List<MapEntry<String, Session>> sessions;
+
+  const CalendarTable({super.key, required this.sessions});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locations = ref.watch(locationsProvider);
+    final teamMembers = ref.watch(teamMembersProvider);
+    final theme = Theme.of(context);
+
+    return BaseTable(
+      alternatingRows: true,
+      headerDecoration: BoxDecoration(
+        color: theme.colorScheme.secondary,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+      ),
+      headers: [
+        BaseTableCell(
+          child: Text('Date', style: TextStyle(color: Colors.white)),
+          flex: 2,
+        ),
+        BaseTableCell(
+          child: Text('Time', style: TextStyle(color: Colors.white)),
+          flex: 2,
+        ),
+        BaseTableCell(
+          child: Text('Duration', style: TextStyle(color: Colors.white)),
+        ),
+        BaseTableCell(
+          child: Text('Location', style: TextStyle(color: Colors.white)),
+        ),
+        BaseTableCell(
+          child: Text('Members', style: TextStyle(color: Colors.white)),
+        ),
+        BaseTableCell(
+          child: Text('Status', style: TextStyle(color: Colors.white)),
+        ),
+        BaseTableCell(
+          child: Text('', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+      rows: sessions.map((entry) {
+        final id = entry.key;
+        final session = entry.value;
+        final start = session.startTime.toDateTime();
+        final end = session.endTime.toDateTime();
+        final duration = end.difference(start);
+        final locationName =
+            locations[session.locationId]?.location ?? session.locationId;
+        final memberCount = session.memberSessions.length;
+        final status = getSessionStatus(session);
+
+        return BaseTableRow(
+          cells: [
+            BaseTableCell(child: Text(formatDate(start)), flex: 2),
+            BaseTableCell(
+              child: Text('${formatTime(start)} - ${formatTime(end)}'),
+              flex: 2,
+            ),
+            BaseTableCell(child: Text(formatDuration(duration))),
+            BaseTableCell(child: Text(locationName)),
+            BaseTableCell(
+              child: _MemberCount(
+                total: memberCount,
+                status: status,
+                session: session,
+              ),
+            ),
+            BaseTableCell(child: _StatusChip(status: status)),
+            BaseTableCell(
+              child: IconButton(
+                icon: Icon(
+                  Icons.visibility,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                tooltip: 'View details',
+                onPressed: () => showSessionDetailDialog(
+                  context,
+                  ref,
+                  sessionId: id,
+                  session: session,
+                  locations: locations,
+                  teamMembers: teamMembers,
+                ),
+              ),
+            ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final SessionStatus status;
+
+  const _StatusChip({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      label: Text(
+        statusLabel(status),
+        style: const TextStyle(color: Colors.white, fontSize: 12),
+      ),
+      backgroundColor: statusColor(status),
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+    );
+  }
+}
+
+class _MemberCount extends StatelessWidget {
+  final int total;
+  final SessionStatus status;
+  final Session session;
+
+  const _MemberCount({
+    required this.total,
+    required this.status,
+    required this.session,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final activeCount = session.memberSessions
+        .where((ms) => ms.hasCheckInTime() && !ms.hasCheckOutTime())
+        .length;
+    final text =
+        status == SessionStatus.current || status == SessionStatus.overtime
+        ? '$activeCount / $total'
+        : '$total';
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.people, size: 16, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: 4),
+        Text(text),
+      ],
+    );
+  }
+}

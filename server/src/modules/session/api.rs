@@ -69,12 +69,10 @@ impl SessionService for SessionApi {
 
     let stream = BroadcastStream::new(rx).filter_map(|result| match result {
       Ok(event) => match event {
-        ChangeEvent::Record { id, data, .. } => data.map(|session| {
-          Ok(StreamSessionsResponse {
-            sessions: vec![SessionResponse { id, session: Some(session) }],
-            sync_type: SyncType::Partial as i32,
-          })
-        }),
+        ChangeEvent::Record { id, data, .. } => Some(Ok(StreamSessionsResponse {
+          sessions: vec![SessionResponse { id, session: data }],
+          sync_type: SyncType::Partial as i32,
+        })),
         ChangeEvent::Table => match get_all_sessions() {
           Ok(sessions) => Some(Ok(StreamSessionsResponse { sessions, sync_type: SyncType::Full as i32 })),
           Err(e) => {

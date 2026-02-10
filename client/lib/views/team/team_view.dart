@@ -9,12 +9,43 @@ import 'package:time_keeper/providers/team_member_provider.dart';
 import 'package:time_keeper/views/team/check_in_out_button.dart';
 import 'package:time_keeper/views/team/member_type_chip.dart';
 import 'package:time_keeper/views/team/team_member_dialog.dart';
+import 'package:time_keeper/widgets/dialogs/confirm_dialog.dart';
 import 'package:time_keeper/widgets/dialogs/snackbar_dialog.dart';
 import 'package:time_keeper/widgets/tables/base_table.dart';
 import 'package:time_keeper/widgets/tables/edit_table.dart';
 
 class TeamView extends ConsumerWidget {
   const TeamView({super.key});
+
+  void _showClearDialog(
+    BuildContext context,
+    WidgetRef ref, {
+    required String title,
+    required String description,
+    required List<String> ids,
+  }) {
+    if (ids.isEmpty) {
+      SnackBarDialog.info(message: 'No members to delete').show(context);
+      return;
+    }
+
+    ConfirmDialog.warn(
+      title: title,
+      message: Text(
+        'Are you sure you want to delete $description? '
+        '(${ids.length} ${ids.length == 1 ? 'member' : 'members'})',
+      ),
+      confirmText: 'Delete',
+      onConfirmAsync: () async {
+        final client = ref.read(teamMemberServiceProvider);
+        for (final id in ids) {
+          await client.deleteTeamMember(DeleteTeamMemberRequest(id: id));
+        }
+      },
+      showResultDialog: true,
+      successMessage: Text('Deleted ${ids.length} members'),
+    ).show(context);
+  }
 
   bool _isCheckedIn(String memberId, Map<String, Session> sessions) {
     for (final session in sessions.values) {
@@ -48,7 +79,58 @@ class TeamView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Team Members', style: theme.textTheme.headlineMedium),
+          Row(
+            children: [
+              Text('Team Members', style: theme.textTheme.headlineMedium),
+              const Spacer(),
+              _ClearButton(
+                label: 'Clear Students',
+                icon: Icons.school,
+                color: Colors.orange,
+                onPressed: () => _showClearDialog(
+                  context,
+                  ref,
+                  title: 'Clear Students',
+                  description: 'all students',
+                  ids: teamMembers.entries
+                      .where(
+                        (e) => e.value.memberType == TeamMemberType.STUDENT,
+                      )
+                      .map((e) => e.key)
+                      .toList(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _ClearButton(
+                label: 'Clear Mentors',
+                icon: Icons.person,
+                color: Colors.orange,
+                onPressed: () => _showClearDialog(
+                  context,
+                  ref,
+                  title: 'Clear Mentors',
+                  description: 'all mentors',
+                  ids: teamMembers.entries
+                      .where((e) => e.value.memberType == TeamMemberType.MENTOR)
+                      .map((e) => e.key)
+                      .toList(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _ClearButton(
+                label: 'Clear All',
+                icon: Icons.delete_sweep,
+                color: Colors.red,
+                onPressed: () => _showClearDialog(
+                  context,
+                  ref,
+                  title: 'Clear All Members',
+                  description: 'all team members',
+                  ids: teamMembers.keys.toList(),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
           Expanded(
             child: EditTable(
@@ -160,6 +242,30 @@ class TeamView extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ClearButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onPressed;
+
+  const _ClearButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 18, color: color),
+      label: Text(label, style: TextStyle(color: color)),
+      style: OutlinedButton.styleFrom(side: BorderSide(color: color)),
     );
   }
 }

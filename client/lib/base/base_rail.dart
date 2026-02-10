@@ -58,6 +58,14 @@ class BaseRail extends HookConsumerWidget {
                 icon: Icon(Icons.event_note),
                 label: Text('Sessions'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.location_on),
+                label: Text('Locations'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.analytics),
+                label: Text('Stats'),
+              ),
             ],
           ),
           const VerticalDivider(thickness: 1, width: 1),

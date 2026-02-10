@@ -18,7 +18,14 @@ import 'package:time_keeper/views/settings/settings_view.dart'
 import 'package:time_keeper/views/sessions/session_view.dart'
     deferred as sessions;
 import 'package:time_keeper/views/team/team_view.dart' deferred as team;
+import 'package:time_keeper/views/locations/locations_view.dart'
+    deferred as locations;
 import 'package:time_keeper/views/users/users_view.dart' deferred as users;
+import 'package:time_keeper/views/leaderboard/leaderboard_view.dart'
+    deferred as leaderboard;
+import 'package:time_keeper/views/stats/stats_view.dart' deferred as stats;
+import 'package:time_keeper/views/calendar/calendar_view.dart'
+    deferred as calendar;
 
 part 'router.g.dart';
 
@@ -109,6 +116,30 @@ GoRouter router(Ref ref) {
         },
         routes: [
           GoRoute(
+            name: AppRoute.leaderboard.name,
+            path: AppRoute.leaderboard.path,
+            pageBuilder: (context, state) => _buildTransitionPage(
+              key: state.pageKey,
+              child: DeferredWidget(
+                libraryKey: AppRoute.leaderboard.path,
+                libraryLoader: leaderboard.loadLibrary,
+                builder: (context) => leaderboard.LeaderboardView(),
+              ),
+            ),
+          ),
+          GoRoute(
+            name: AppRoute.calendar.name,
+            path: AppRoute.calendar.path,
+            pageBuilder: (context, state) => _buildTransitionPage(
+              key: state.pageKey,
+              child: DeferredWidget(
+                libraryKey: AppRoute.calendar.path,
+                libraryLoader: calendar.loadLibrary,
+                builder: (context) => calendar.CalendarView(),
+              ),
+            ),
+          ),
+          GoRoute(
             name: AppRoute.kiosk.name,
             path: AppRoute.kiosk.path,
             pageBuilder: (context, state) => _buildTransitionPage(
@@ -176,6 +207,30 @@ GoRouter router(Ref ref) {
                     libraryKey: AppRoute.sessions.path,
                     libraryLoader: sessions.loadLibrary,
                     builder: (context) => sessions.SessionView(),
+                  ),
+                ),
+              ),
+              GoRoute(
+                name: AppRoute.locations.name,
+                path: AppRoute.locations.path,
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  key: state.pageKey,
+                  child: DeferredWidget(
+                    libraryKey: AppRoute.locations.path,
+                    libraryLoader: locations.loadLibrary,
+                    builder: (context) => locations.LocationsView(),
+                  ),
+                ),
+              ),
+              GoRoute(
+                name: AppRoute.stats.name,
+                path: AppRoute.stats.path,
+                pageBuilder: (context, state) => _buildTransitionPage(
+                  key: state.pageKey,
+                  child: DeferredWidget(
+                    libraryKey: AppRoute.stats.path,
+                    libraryLoader: stats.loadLibrary,
+                    builder: (context) => stats.StatsView(),
                   ),
                 ),
               ),
