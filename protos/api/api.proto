@@ -5,6 +5,7 @@ package tk.api;
 import public "api/location.proto";
 import public "api/schedule.proto";
 import public "api/session.proto";
+import public "api/settings.proto";
 import public "api/team_member.proto";
 import public "api/user.proto";
 

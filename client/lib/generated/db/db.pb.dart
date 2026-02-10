@@ -12,6 +12,7 @@
 
 import 'dart:core' as $core;
 
+import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
 import '../common/common.pb.dart' as $0;
@@ -488,6 +489,60 @@ class Session extends $pb.GeneratedMessage {
   $core.bool hasFinished() => $_has(4);
   @$pb.TagNumber(5)
   void clearFinished() => $_clearField(5);
+}
+
+class Settings extends $pb.GeneratedMessage {
+  factory Settings({
+    $fixnum.Int64? nextSessionThresholdSecs,
+  }) {
+    final result = create();
+    if (nextSessionThresholdSecs != null)
+      result.nextSessionThresholdSecs = nextSessionThresholdSecs;
+    return result;
+  }
+
+  Settings._();
+
+  factory Settings.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory Settings.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'Settings',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'tk.db'),
+      createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'nextSessionThresholdSecs')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Settings clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Settings copyWith(void Function(Settings) updates) =>
+      super.copyWith((message) => updates(message as Settings)) as Settings;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Settings create() => Settings._();
+  @$core.override
+  Settings createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static Settings getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Settings>(create);
+  static Settings? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get nextSessionThresholdSecs => $_getI64(0);
+  @$pb.TagNumber(1)
+  set nextSessionThresholdSecs($fixnum.Int64 value) => $_setInt64(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasNextSessionThresholdSecs() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNextSessionThresholdSecs() => $_clearField(1);
 }
 
 const $core.bool _omitFieldNames =

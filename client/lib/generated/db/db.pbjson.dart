@@ -189,3 +189,22 @@ final $typed_data.Uint8List sessionDescriptor = $convert.base64Decode(
     'Eh8KC2xvY2F0aW9uX2lkGAMgASgJUgpsb2NhdGlvbklkEkEKD21lbWJlcl9zZXNzaW9ucxgEIA'
     'MoCzIYLnRrLmRiLlRlYW1NZW1iZXJTZXNzaW9uUg5tZW1iZXJTZXNzaW9ucxIaCghmaW5pc2hl'
     'ZBgFIAEoCFIIZmluaXNoZWQ=');
+
+@$core.Deprecated('Use settingsDescriptor instead')
+const Settings$json = {
+  '1': 'Settings',
+  '2': [
+    {
+      '1': 'next_session_threshold_secs',
+      '3': 1,
+      '4': 1,
+      '5': 3,
+      '10': 'nextSessionThresholdSecs'
+    },
+  ],
+};
+
+/// Descriptor for `Settings`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List settingsDescriptor = $convert.base64Decode(
+    'CghTZXR0aW5ncxI9ChtuZXh0X3Nlc3Npb25fdGhyZXNob2xkX3NlY3MYASABKANSGG5leHRTZX'
+    'NzaW9uVGhyZXNob2xkU2Vjcw==');

@@ -53,6 +53,11 @@ pub struct Session {
     #[prost(bool, tag = "5")]
     pub finished: bool,
 }
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct Settings {
+    #[prost(int64, tag = "1")]
+    pub next_session_threshold_secs: i64,
+}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TeamMemberType {

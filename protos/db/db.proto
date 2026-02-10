@@ -44,3 +44,7 @@ message Session {
   repeated TeamMemberSession member_sessions = 4;
   bool finished = 5;
 }
+
+message Settings {
+  int64 next_session_threshold_secs = 1;
+}
