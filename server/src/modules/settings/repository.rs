@@ -1,7 +1,13 @@
 use anyhow::Result;
 use database::DataInsert;
 
-use crate::{core::db::get_db, generated::db::Settings};
+use crate::{
+  core::{
+    db::get_db,
+    events::{ChangeEvent, EVENT_BUS},
+  },
+  generated::db::Settings,
+};
 
 const SETTINGS_TABLE_NAME: &str = "settings";
 const SETTINGS_KEY: &str = "settings";
@@ -11,6 +17,7 @@ pub const DEFAULT_NEXT_SESSION_THRESHOLD_SECS: i64 = 4 * 60 * 60; // 4 hours
 pub trait SettingsRepository {
   fn set(record: &Settings) -> Result<()>;
   fn get() -> Result<Settings>;
+  fn clear() -> Result<()>;
 }
 
 impl SettingsRepository for Settings {
@@ -33,5 +40,20 @@ impl SettingsRepository for Settings {
       Self::set(&default)?;
       Ok(default)
     }
+  }
+
+  fn clear() -> Result<()> {
+    let db = get_db()?;
+    let table = db.get_table(SETTINGS_TABLE_NAME);
+    table.clear()?;
+
+    let Some(event_bus) = EVENT_BUS.get() else {
+      log::error!("Event bus not initialized");
+      return Err(anyhow::anyhow!("Event bus not initialized"));
+    };
+
+    event_bus.publish(ChangeEvent::<Settings>::Table)?;
+
+    Ok(())
   }
 }

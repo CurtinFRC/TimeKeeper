@@ -33,16 +33,16 @@ message Location {
 
 message TeamMemberSession {
   string team_member_id = 1;
-  common.Timestamp check_in_time = 2;
-  optional common.Timestamp check_out_time = 3;
+  string session_id = 2;
+  common.Timestamp check_in_time = 3;
+  optional common.Timestamp check_out_time = 4;
 }
 
 message Session {
   common.Timestamp start_time = 1;
   common.Timestamp end_time = 2;
   string location_id = 3;
-  repeated TeamMemberSession member_sessions = 4;
-  bool finished = 5;
+  bool finished = 4;
 }
 
 message Settings {

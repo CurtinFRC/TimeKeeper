@@ -308,11 +308,13 @@ class Location extends $pb.GeneratedMessage {
 class TeamMemberSession extends $pb.GeneratedMessage {
   factory TeamMemberSession({
     $core.String? teamMemberId,
+    $core.String? sessionId,
     $0.Timestamp? checkInTime,
     $0.Timestamp? checkOutTime,
   }) {
     final result = create();
     if (teamMemberId != null) result.teamMemberId = teamMemberId;
+    if (sessionId != null) result.sessionId = sessionId;
     if (checkInTime != null) result.checkInTime = checkInTime;
     if (checkOutTime != null) result.checkOutTime = checkOutTime;
     return result;
@@ -332,9 +334,10 @@ class TeamMemberSession extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'tk.db'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'teamMemberId')
-    ..aOM<$0.Timestamp>(2, _omitFieldNames ? '' : 'checkInTime',
+    ..aOS(2, _omitFieldNames ? '' : 'sessionId')
+    ..aOM<$0.Timestamp>(3, _omitFieldNames ? '' : 'checkInTime',
         subBuilder: $0.Timestamp.create)
-    ..aOM<$0.Timestamp>(3, _omitFieldNames ? '' : 'checkOutTime',
+    ..aOM<$0.Timestamp>(4, _omitFieldNames ? '' : 'checkOutTime',
         subBuilder: $0.Timestamp.create)
     ..hasRequiredFields = false;
 
@@ -367,26 +370,35 @@ class TeamMemberSession extends $pb.GeneratedMessage {
   void clearTeamMemberId() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $0.Timestamp get checkInTime => $_getN(1);
+  $core.String get sessionId => $_getSZ(1);
   @$pb.TagNumber(2)
-  set checkInTime($0.Timestamp value) => $_setField(2, value);
+  set sessionId($core.String value) => $_setString(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasCheckInTime() => $_has(1);
+  $core.bool hasSessionId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearCheckInTime() => $_clearField(2);
-  @$pb.TagNumber(2)
-  $0.Timestamp ensureCheckInTime() => $_ensure(1);
+  void clearSessionId() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $0.Timestamp get checkOutTime => $_getN(2);
+  $0.Timestamp get checkInTime => $_getN(2);
   @$pb.TagNumber(3)
-  set checkOutTime($0.Timestamp value) => $_setField(3, value);
+  set checkInTime($0.Timestamp value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasCheckOutTime() => $_has(2);
+  $core.bool hasCheckInTime() => $_has(2);
   @$pb.TagNumber(3)
-  void clearCheckOutTime() => $_clearField(3);
+  void clearCheckInTime() => $_clearField(3);
   @$pb.TagNumber(3)
-  $0.Timestamp ensureCheckOutTime() => $_ensure(2);
+  $0.Timestamp ensureCheckInTime() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $0.Timestamp get checkOutTime => $_getN(3);
+  @$pb.TagNumber(4)
+  set checkOutTime($0.Timestamp value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasCheckOutTime() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearCheckOutTime() => $_clearField(4);
+  @$pb.TagNumber(4)
+  $0.Timestamp ensureCheckOutTime() => $_ensure(3);
 }
 
 class Session extends $pb.GeneratedMessage {
@@ -394,14 +406,12 @@ class Session extends $pb.GeneratedMessage {
     $0.Timestamp? startTime,
     $0.Timestamp? endTime,
     $core.String? locationId,
-    $core.Iterable<TeamMemberSession>? memberSessions,
     $core.bool? finished,
   }) {
     final result = create();
     if (startTime != null) result.startTime = startTime;
     if (endTime != null) result.endTime = endTime;
     if (locationId != null) result.locationId = locationId;
-    if (memberSessions != null) result.memberSessions.addAll(memberSessions);
     if (finished != null) result.finished = finished;
     return result;
   }
@@ -424,9 +434,7 @@ class Session extends $pb.GeneratedMessage {
     ..aOM<$0.Timestamp>(2, _omitFieldNames ? '' : 'endTime',
         subBuilder: $0.Timestamp.create)
     ..aOS(3, _omitFieldNames ? '' : 'locationId')
-    ..pPM<TeamMemberSession>(4, _omitFieldNames ? '' : 'memberSessions',
-        subBuilder: TeamMemberSession.create)
-    ..aOB(5, _omitFieldNames ? '' : 'finished')
+    ..aOB(4, _omitFieldNames ? '' : 'finished')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -479,16 +487,13 @@ class Session extends $pb.GeneratedMessage {
   void clearLocationId() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  $pb.PbList<TeamMemberSession> get memberSessions => $_getList(3);
-
-  @$pb.TagNumber(5)
-  $core.bool get finished => $_getBF(4);
-  @$pb.TagNumber(5)
-  set finished($core.bool value) => $_setBool(4, value);
-  @$pb.TagNumber(5)
-  $core.bool hasFinished() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearFinished() => $_clearField(5);
+  $core.bool get finished => $_getBF(3);
+  @$pb.TagNumber(4)
+  set finished($core.bool value) => $_setBool(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasFinished() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearFinished() => $_clearField(4);
 }
 
 class Settings extends $pb.GeneratedMessage {

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:time_keeper/generated/common/common.pbenum.dart';
 import 'package:time_keeper/providers/auth_provider.dart';
 import 'package:time_keeper/utils/permissions.dart';
 import 'package:time_keeper/providers/session_provider.dart';
-import 'package:time_keeper/utils/pcsc_scanner.dart';
+import 'package:time_keeper/hooks/use_pcsc_scanner.dart';
 import 'package:time_keeper/utils/time.dart';
 import 'package:time_keeper/views/kiosk/checked_in_list.dart';
 import 'package:time_keeper/views/kiosk/kiosk_dialog.dart';
@@ -44,37 +43,20 @@ class HomeView extends HookConsumerWidget {
     final hasKiosk = roles.any((role) => role.hasPermission(Role.KIOSK));
 
     // PCSC RFID reader - only active when user has KIOSK permission
-    final contextRef = useRef<BuildContext?>(null);
-    final refRef = useRef<WidgetRef?>(null);
-    contextRef.value = context;
-    refRef.value = ref;
-
-    useEffect(() {
-      if (!hasKiosk) return null;
-
-      final scanner = PcscScanner(
-        onScan: (uid) {
-          _log.i('PCSC card UID: $uid');
-          final ctx = contextRef.value;
-          final r = refRef.value;
-          if (ctx != null && ctx.mounted && r != null) {
-            handleKioskScan(input: uid, context: ctx, ref: r);
-          }
-        },
-        onError: (message) {
-          final ctx = contextRef.value;
-          if (ctx != null && ctx.mounted) {
-            ToastOverlay.error(ctx, title: 'Scan Error', message: message);
-          }
-        },
-      );
-
-      scanner.start();
-
-      return () {
-        scanner.dispose();
-      };
-    }, [hasKiosk]);
+    usePcscScanner(
+      enabled: hasKiosk,
+      onScan: (uid) {
+        _log.i('PCSC card UID: $uid');
+        if (context.mounted) {
+          handleKioskScan(input: uid, context: context, ref: ref);
+        }
+      },
+      onError: (message) {
+        if (context.mounted) {
+          ToastOverlay.error(context, title: 'Scan Error', message: message);
+        }
+      },
+    );
 
     return Column(
       children: [
@@ -99,7 +81,7 @@ class HomeView extends HookConsumerWidget {
           currentSession: currentSession,
           nextSession: nextSession,
         ),
-        Expanded(child: CheckedInList(sessions: unfinishedSessions)),
+        Expanded(child: CheckedInList()),
       ],
     );
   }

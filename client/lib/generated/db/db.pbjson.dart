@@ -118,9 +118,10 @@ const TeamMemberSession$json = {
   '1': 'TeamMemberSession',
   '2': [
     {'1': 'team_member_id', '3': 1, '4': 1, '5': 9, '10': 'teamMemberId'},
+    {'1': 'session_id', '3': 2, '4': 1, '5': 9, '10': 'sessionId'},
     {
       '1': 'check_in_time',
-      '3': 2,
+      '3': 3,
       '4': 1,
       '5': 11,
       '6': '.tk.common.Timestamp',
@@ -128,7 +129,7 @@ const TeamMemberSession$json = {
     },
     {
       '1': 'check_out_time',
-      '3': 3,
+      '3': 4,
       '4': 1,
       '5': 11,
       '6': '.tk.common.Timestamp',
@@ -145,9 +146,10 @@ const TeamMemberSession$json = {
 /// Descriptor for `TeamMemberSession`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List teamMemberSessionDescriptor = $convert.base64Decode(
     'ChFUZWFtTWVtYmVyU2Vzc2lvbhIkCg50ZWFtX21lbWJlcl9pZBgBIAEoCVIMdGVhbU1lbWJlck'
-    'lkEjgKDWNoZWNrX2luX3RpbWUYAiABKAsyFC50ay5jb21tb24uVGltZXN0YW1wUgtjaGVja0lu'
-    'VGltZRI/Cg5jaGVja19vdXRfdGltZRgDIAEoCzIULnRrLmNvbW1vbi5UaW1lc3RhbXBIAFIMY2'
-    'hlY2tPdXRUaW1liAEBQhEKD19jaGVja19vdXRfdGltZQ==');
+    'lkEh0KCnNlc3Npb25faWQYAiABKAlSCXNlc3Npb25JZBI4Cg1jaGVja19pbl90aW1lGAMgASgL'
+    'MhQudGsuY29tbW9uLlRpbWVzdGFtcFILY2hlY2tJblRpbWUSPwoOY2hlY2tfb3V0X3RpbWUYBC'
+    'ABKAsyFC50ay5jb21tb24uVGltZXN0YW1wSABSDGNoZWNrT3V0VGltZYgBAUIRCg9fY2hlY2tf'
+    'b3V0X3RpbWU=');
 
 @$core.Deprecated('Use sessionDescriptor instead')
 const Session$json = {
@@ -170,15 +172,7 @@ const Session$json = {
       '10': 'endTime'
     },
     {'1': 'location_id', '3': 3, '4': 1, '5': 9, '10': 'locationId'},
-    {
-      '1': 'member_sessions',
-      '3': 4,
-      '4': 3,
-      '5': 11,
-      '6': '.tk.db.TeamMemberSession',
-      '10': 'memberSessions'
-    },
-    {'1': 'finished', '3': 5, '4': 1, '5': 8, '10': 'finished'},
+    {'1': 'finished', '3': 4, '4': 1, '5': 8, '10': 'finished'},
   ],
 };
 
@@ -186,9 +180,8 @@ const Session$json = {
 final $typed_data.Uint8List sessionDescriptor = $convert.base64Decode(
     'CgdTZXNzaW9uEjMKCnN0YXJ0X3RpbWUYASABKAsyFC50ay5jb21tb24uVGltZXN0YW1wUglzdG'
     'FydFRpbWUSLwoIZW5kX3RpbWUYAiABKAsyFC50ay5jb21tb24uVGltZXN0YW1wUgdlbmRUaW1l'
-    'Eh8KC2xvY2F0aW9uX2lkGAMgASgJUgpsb2NhdGlvbklkEkEKD21lbWJlcl9zZXNzaW9ucxgEIA'
-    'MoCzIYLnRrLmRiLlRlYW1NZW1iZXJTZXNzaW9uUg5tZW1iZXJTZXNzaW9ucxIaCghmaW5pc2hl'
-    'ZBgFIAEoCFIIZmluaXNoZWQ=');
+    'Eh8KC2xvY2F0aW9uX2lkGAMgASgJUgpsb2NhdGlvbklkEhoKCGZpbmlzaGVkGAQgASgIUghmaW'
+    '5pc2hlZA==');
 
 @$core.Deprecated('Use settingsDescriptor instead')
 const Settings$json = {

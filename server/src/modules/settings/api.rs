@@ -2,16 +2,19 @@ use tonic::{Request, Response, Result, Status};
 
 use crate::{
   auth::auth_helpers::require_permission,
-  core::db::{get_db, recreate_default_admin},
+  core::db::recreate_default_admin,
   generated::{
     api::{
       GetSettingsRequest, GetSettingsResponse, PurgeDatabaseRequest, PurgeDatabaseResponse, UpdateSettingsRequest,
       UpdateSettingsResponse, settings_service_server::SettingsService,
     },
     common::Role,
-    db::Settings,
+    db::{Location, Secret, Session, Settings, TeamMember, TeamMemberSession, User},
   },
-  modules::settings::SettingsRepository,
+  modules::{
+    location::LocationRepository, secret::SecretRepository, session::SessionRepository, settings::SettingsRepository,
+    team_member::TeamMemberRepository, team_member_session::TeamMemberSessionRepository, user::UserRepository,
+  },
 };
 
 pub struct SettingsApi;
@@ -42,11 +45,19 @@ impl SettingsService for SettingsApi {
   ) -> Result<Response<PurgeDatabaseResponse>, Status> {
     require_permission(&request, Role::Admin)?;
 
-    let db = get_db().map_err(|e| Status::internal(format!("Failed to get database: {}", e)))?;
-    db.clear().map_err(|e| Status::internal(format!("Failed to purge database: {}", e)))?;
+    // Clear all data using repository methods so the event bus notifies clients
+    TeamMemberSession::clear()
+      .map_err(|e| Status::internal(format!("Failed to clear team member session data: {}", e)))?;
+    Session::clear().map_err(|e| Status::internal(format!("Failed to clear session data: {}", e)))?;
+    TeamMember::clear().map_err(|e| Status::internal(format!("Failed to clear team member data: {}", e)))?;
+    Location::clear().map_err(|e| Status::internal(format!("Failed to clear location data: {}", e)))?;
+    User::clear().map_err(|e| Status::internal(format!("Failed to clear user data: {}", e)))?;
+    Secret::clear().map_err(|e| Status::internal(format!("Failed to clear secret data: {}", e)))?;
+    Settings::clear().map_err(|e| Status::internal(format!("Failed to clear settings data: {}", e)))?;
 
     log::warn!("Database purged by admin");
 
+    // Recreate admin user with default password after clearing users
     recreate_default_admin().map_err(|e| Status::internal(format!("Failed to recreate admin user: {}", e)))?;
 
     Ok(Response::new(PurgeDatabaseResponse {}))

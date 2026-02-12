@@ -6,6 +6,7 @@ import 'package:time_keeper/helpers/grpc_call_wrapper.dart';
 import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/providers/team_member_provider.dart';
+import 'package:time_keeper/providers/team_member_session_provider.dart';
 import 'package:time_keeper/helpers/session_helper.dart';
 import 'package:time_keeper/views/team/check_in_out_button.dart';
 import 'package:time_keeper/views/team/member_type_chip.dart';
@@ -51,7 +52,7 @@ class TeamView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final teamMembers = ref.watch(teamMembersProvider);
-    final sessions = ref.watch(sessionsProvider);
+    final teamMemberSessions = ref.watch(teamMemberSessionsProvider);
     final currentLocation = ref.watch(currentLocationProvider) ?? '';
     final theme = Theme.of(context);
 
@@ -161,7 +162,7 @@ class TeamView extends ConsumerWidget {
               editRows: sorted.map((entry) {
                 final id = entry.key;
                 final member = entry.value;
-                final checkedIn = isMemberCheckedIn(id, sessions.values);
+                final checkedIn = isMemberCheckedIn(id, teamMemberSessions.values);
 
                 return EditTableRow(
                   key: ValueKey(id),
@@ -207,7 +208,7 @@ class TeamView extends ConsumerWidget {
                         onPressed: () async {
                           final req = CheckInOutRequest(
                             teamMemberId: id,
-                            location: Location(location: currentLocation),
+                            locationId: currentLocation,
                           );
                           final result = await callGrpcEndpoint(
                             () => ref

@@ -35,12 +35,14 @@ pub struct Location {
 pub struct TeamMemberSession {
     #[prost(string, tag = "1")]
     pub team_member_id: ::prost::alloc::string::String,
-    #[prost(message, optional, tag = "2")]
-    pub check_in_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(string, tag = "2")]
+    pub session_id: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "3")]
+    pub check_in_time: ::core::option::Option<super::common::Timestamp>,
+    #[prost(message, optional, tag = "4")]
     pub check_out_time: ::core::option::Option<super::common::Timestamp>,
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Session {
     #[prost(message, optional, tag = "1")]
     pub start_time: ::core::option::Option<super::common::Timestamp>,
@@ -48,9 +50,7 @@ pub struct Session {
     pub end_time: ::core::option::Option<super::common::Timestamp>,
     #[prost(string, tag = "3")]
     pub location_id: ::prost::alloc::string::String,
-    #[prost(message, repeated, tag = "4")]
-    pub member_sessions: ::prost::alloc::vec::Vec<TeamMemberSession>,
-    #[prost(bool, tag = "5")]
+    #[prost(bool, tag = "4")]
     pub finished: bool,
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]

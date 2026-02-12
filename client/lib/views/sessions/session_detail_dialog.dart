@@ -13,6 +13,7 @@ void showSessionDetailDialog(
   required Session session,
   required Map<String, Location> locations,
   required Map<String, TeamMember> teamMembers,
+  required Map<String, TeamMemberSession> teamMemberSessions,
 }) {
   final start = session.startTime.toDateTime();
   final end = session.endTime.toDateTime();
@@ -21,7 +22,9 @@ void showSessionDetailDialog(
       locations[session.locationId]?.location ?? session.locationId;
   final status = getSessionStatus(session);
 
-  final memberSessions = session.memberSessions.toList()
+  final memberSessions = teamMemberSessions.values
+      .where((ms) => ms.sessionId == sessionId)
+      .toList()
     ..sort((a, b) {
       final aTime = a.hasCheckInTime()
           ? a.checkInTime.toDateTime()

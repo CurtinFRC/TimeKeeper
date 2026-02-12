@@ -6,4 +6,5 @@ pub mod session;
 pub mod settings;
 pub mod statistics;
 pub mod team_member;
+pub mod team_member_session;
 pub mod user;

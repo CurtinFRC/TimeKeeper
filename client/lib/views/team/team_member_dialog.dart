@@ -9,6 +9,7 @@ import 'package:time_keeper/utils/grpc_result.dart';
 import 'package:time_keeper/widgets/dialogs/confirm_dialog.dart';
 import 'package:time_keeper/widgets/dialogs/popup_dialog.dart';
 import 'package:time_keeper/widgets/dialogs/snackbar_dialog.dart';
+import 'package:time_keeper/widgets/rfid_scan_button.dart';
 
 void showTeamMemberDialog(
   BuildContext context,
@@ -151,12 +152,20 @@ class _TeamMemberForm extends HookConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: secondaryAliasController,
-            decoration: const InputDecoration(
-              labelText: 'Secondary Alias (optional)',
-              border: OutlineInputBorder(),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: secondaryAliasController,
+                  decoration: const InputDecoration(
+                    labelText: 'Secondary Alias (optional)',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              RfidScanButton(controller: secondaryAliasController),
+            ],
           ),
           const SizedBox(height: 24),
           Row(
