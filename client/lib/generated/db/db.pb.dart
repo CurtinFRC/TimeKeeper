@@ -431,12 +431,16 @@ class Session extends $pb.GeneratedMessage {
     $0.Timestamp? endTime,
     $core.String? locationId,
     $core.bool? finished,
+    $core.bool? startReminderSent,
+    $core.bool? endReminderSent,
   }) {
     final result = create();
     if (startTime != null) result.startTime = startTime;
     if (endTime != null) result.endTime = endTime;
     if (locationId != null) result.locationId = locationId;
     if (finished != null) result.finished = finished;
+    if (startReminderSent != null) result.startReminderSent = startReminderSent;
+    if (endReminderSent != null) result.endReminderSent = endReminderSent;
     return result;
   }
 
@@ -459,6 +463,8 @@ class Session extends $pb.GeneratedMessage {
         subBuilder: $0.Timestamp.create)
     ..aOS(3, _omitFieldNames ? '' : 'locationId')
     ..aOB(4, _omitFieldNames ? '' : 'finished')
+    ..aOB(5, _omitFieldNames ? '' : 'startReminderSent')
+    ..aOB(6, _omitFieldNames ? '' : 'endReminderSent')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -518,6 +524,24 @@ class Session extends $pb.GeneratedMessage {
   $core.bool hasFinished() => $_has(3);
   @$pb.TagNumber(4)
   void clearFinished() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get startReminderSent => $_getBF(4);
+  @$pb.TagNumber(5)
+  set startReminderSent($core.bool value) => $_setBool(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasStartReminderSent() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearStartReminderSent() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.bool get endReminderSent => $_getBF(5);
+  @$pb.TagNumber(6)
+  set endReminderSent($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasEndReminderSent() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearEndReminderSent() => $_clearField(6);
 }
 
 class Settings extends $pb.GeneratedMessage {

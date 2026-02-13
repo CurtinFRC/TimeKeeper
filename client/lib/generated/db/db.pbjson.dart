@@ -203,6 +203,14 @@ const Session$json = {
     },
     {'1': 'location_id', '3': 3, '4': 1, '5': 9, '10': 'locationId'},
     {'1': 'finished', '3': 4, '4': 1, '5': 8, '10': 'finished'},
+    {
+      '1': 'start_reminder_sent',
+      '3': 5,
+      '4': 1,
+      '5': 8,
+      '10': 'startReminderSent'
+    },
+    {'1': 'end_reminder_sent', '3': 6, '4': 1, '5': 8, '10': 'endReminderSent'},
   ],
 };
 
@@ -211,7 +219,8 @@ final $typed_data.Uint8List sessionDescriptor = $convert.base64Decode(
     'CgdTZXNzaW9uEjMKCnN0YXJ0X3RpbWUYASABKAsyFC50ay5jb21tb24uVGltZXN0YW1wUglzdG'
     'FydFRpbWUSLwoIZW5kX3RpbWUYAiABKAsyFC50ay5jb21tb24uVGltZXN0YW1wUgdlbmRUaW1l'
     'Eh8KC2xvY2F0aW9uX2lkGAMgASgJUgpsb2NhdGlvbklkEhoKCGZpbmlzaGVkGAQgASgIUghmaW'
-    '5pc2hlZA==');
+    '5pc2hlZBIuChNzdGFydF9yZW1pbmRlcl9zZW50GAUgASgIUhFzdGFydFJlbWluZGVyU2VudBIq'
+    'ChFlbmRfcmVtaW5kZXJfc2VudBgGIAEoCFIPZW5kUmVtaW5kZXJTZW50');
 
 @$core.Deprecated('Use settingsDescriptor instead')
 const Settings$json = {

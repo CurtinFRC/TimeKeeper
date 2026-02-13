@@ -56,6 +56,10 @@ pub struct Session {
     pub location_id: ::prost::alloc::string::String,
     #[prost(bool, tag = "4")]
     pub finished: bool,
+    #[prost(bool, tag = "5")]
+    pub start_reminder_sent: bool,
+    #[prost(bool, tag = "6")]
+    pub end_reminder_sent: bool,
 }
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Settings {

@@ -1,4 +1,4 @@
-use std::{collections::HashSet, future::Future, time::Duration};
+use std::{future::Future, time::Duration};
 
 use chrono::Utc;
 use serenity::all::{ChannelId, GuildId};
@@ -22,14 +22,11 @@ use crate::{
 };
 
 #[derive(Default)]
-pub struct DiscordNotificationService {
-  reminded_start: HashSet<String>,
-  reminded_end: HashSet<String>,
-}
+pub struct DiscordNotificationService;
 
 impl DiscordNotificationService {
   pub fn new() -> Self {
-    Self::default()
+    Self
   }
 }
 
@@ -72,11 +69,8 @@ impl ScheduledService for DiscordNotificationService {
     let locations = Location::get_all()?;
     let now_secs = Utc::now().timestamp();
 
-    // Clean up stale entries for sessions that no longer exist
-    self.reminded_start.retain(|id| sessions.contains_key(id));
-    self.reminded_end.retain(|id| sessions.contains_key(id));
-
     let mut messages: Vec<String> = Vec::new();
+    let mut sessions_to_update: Vec<(String, Session)> = Vec::new();
 
     for (id, session) in &sessions {
       if session.finished {
@@ -87,37 +81,50 @@ impl ScheduledService for DiscordNotificationService {
       let end_secs = session.end_time.as_ref().map_or(0, |t| t.seconds);
       let location = locations.get(&session.location_id).map_or("Unknown", |l| l.location.as_str());
 
+      let mut updated = false;
+      let mut session = session.clone();
+
       // Session starting soon reminder
-      if start_reminder_secs > 0 {
+      if start_reminder_secs > 0 && !session.start_reminder_sent {
         let time_until_start = start_secs - now_secs;
-        if time_until_start > 0 && time_until_start <= start_reminder_secs && !self.reminded_start.contains(id) {
+        if time_until_start > 0 && time_until_start <= start_reminder_secs {
           let mins = time_until_start / 60;
           messages.push(start_msg_template.replace("{mins}", &mins.to_string()).replace("{location}", location));
-          self.reminded_start.insert(id.clone());
+          session.start_reminder_sent = true;
+          updated = true;
         }
       }
 
       // Session ending soon reminder
-      if end_reminder_secs > 0 {
+      if end_reminder_secs > 0 && !session.end_reminder_sent {
         let time_until_end = end_secs - now_secs;
-        if time_until_end > 0
-          && time_until_end <= end_reminder_secs
-          && now_secs >= start_secs
-          && !self.reminded_end.contains(id)
-        {
+        if time_until_end > 0 && time_until_end <= end_reminder_secs && now_secs >= start_secs {
           let mins = time_until_end / 60;
           messages.push(end_msg_template.replace("{mins}", &mins.to_string()).replace("{location}", location));
-          self.reminded_end.insert(id.clone());
+          session.end_reminder_sent = true;
+          updated = true;
+        }
+      }
+
+      if updated {
+        sessions_to_update.push((id.clone(), session));
+      }
+    }
+
+    // Send messages first, then persist the flags
+    if !messages.is_empty() {
+      for msg in &messages {
+        let http_ref = &http;
+        if let Err(e) = block_on(async { channel.say(http_ref, msg).await }) {
+          log::error!("[DiscordNotificationService] Failed to send message: {e}");
         }
       }
     }
 
-    if !messages.is_empty() {
-      for msg in messages {
-        let http_ref = &http;
-        if let Err(e) = block_on(async { channel.say(http_ref, &msg).await }) {
-          log::error!("[DiscordNotificationService] Failed to send message: {e}");
-        }
+    // Persist reminder flags to the database so they survive restarts
+    for (id, session) in sessions_to_update {
+      if let Err(e) = Session::update(&id, &session) {
+        log::error!("[DiscordNotificationService] Failed to persist reminder state for session {id}: {e}");
       }
     }
 

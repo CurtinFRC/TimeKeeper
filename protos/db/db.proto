@@ -45,6 +45,8 @@ message Session {
   common.Timestamp end_time = 2;
   string location_id = 3;
   bool finished = 4;
+  bool start_reminder_sent = 5;
+  bool end_reminder_sent = 6;
 }
 
 message Settings {
