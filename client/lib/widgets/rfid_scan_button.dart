@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:time_keeper/hooks/use_pcsc_scanner.dart';
+import 'package:time_keeper/hooks/use_rfid_scanner.dart';
 
 /// A button that listens for an RFID card scan and writes the UID
 /// into the provided [controller].
@@ -23,7 +23,7 @@ class RfidScanButton extends HookWidget {
       listening.value = false;
     }
 
-    usePcscScanner(
+    useRfidScanner(
       enabled: listening.value,
       onScan: (uid) {
         controller.text = uid;
