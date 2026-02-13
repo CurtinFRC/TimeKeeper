@@ -260,19 +260,19 @@ jobs:
 
       - name: Extract server binary
         run: |
-          mkdir -p staging
-          tar -xzf timekeeper-server-linux-x86_64.tar.gz -C staging
-          ls -la staging/
+          tar -xzf timekeeper-server-linux-x86_64.tar.gz
+          ls -la
 
       - name: Download web client
         uses: actions/download-artifact@v4
         with:
           name: web-client
-          path: staging/client/build/web
+          path: client/build/web
 
       - name: Display downloaded files
         run: |
-          find staging -type f | head -50
+          ls -la
+          ls -la client/build/web
 
       # Join Tailscale network
       - name: Tailscale
@@ -290,7 +290,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            systemctl stop server || true
+            systemctl stop server
 
       - name: Deploy to server
         uses: appleboy/scp-action@v1
@@ -299,10 +299,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "staging/server,staging/client"
-          target: "/root/timekeeper/"
+          source: "server,client"
+          target: "/root/"
           overwrite: true
-          strip_components: 1
 
       - name: Configure and restart server
         uses: appleboy/ssh-action@v1.0.3
@@ -312,7 +311,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            chmod +x /root/timekeeper/server
+            chmod +x /root/server
             cat > /etc/systemd/system/server.service << 'SVCEOF'
             [Unit]
             Description=TimeKeeper Server
@@ -320,8 +319,8 @@ jobs:
 
             [Service]
             Type=simple
-            WorkingDirectory=/root/timekeeper
-            ExecStart=/root/timekeeper/server
+            WorkingDirectory=/root
+            ExecStart=/root/server
             Restart=always
             RestartSec=10
 
