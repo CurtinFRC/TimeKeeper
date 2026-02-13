@@ -16,11 +16,24 @@ class RfidScanButton extends HookWidget {
   Widget build(BuildContext context) {
     final listening = useState(false);
     final timerRef = useRef<Timer?>(null);
+    final mounted = useRef(true);
+
+    // Cancel the timer on dispose to prevent writing to a disposed notifier
+    useEffect(() {
+      mounted.value = true;
+      return () {
+        mounted.value = false;
+        timerRef.value?.cancel();
+        timerRef.value = null;
+      };
+    }, const []);
 
     void stopListening() {
       timerRef.value?.cancel();
       timerRef.value = null;
-      listening.value = false;
+      if (mounted.value) {
+        listening.value = false;
+      }
     }
 
     useRfidScanner(
@@ -47,10 +60,7 @@ class RfidScanButton extends HookWidget {
     return OutlinedButton.icon(
       onPressed: () {
         listening.value = true;
-        timerRef.value = Timer(_timeoutDuration, () {
-          listening.value = false;
-          timerRef.value = null;
-        });
+        timerRef.value = Timer(_timeoutDuration, stopListening);
       },
       icon: const Icon(Icons.contactless),
       label: const Text('Scan RFID Card'),
