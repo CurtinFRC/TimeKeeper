@@ -46,9 +46,7 @@ Map<String, MemberHoursData> computeMemberHours(
     }
 
     final member = teamMembers[ms.teamMemberId];
-    final name = member != null
-        ? '${member.firstName} ${member.lastName}'
-        : ms.teamMemberId;
+    final name = member?.displayName ?? ms.teamMemberId;
     final memberType = member?.memberType ?? TeamMemberType.STUDENT;
 
     final (:regularSecs, :overtimeSecs) = computeMemberSessionHours(
@@ -155,9 +153,7 @@ List<DayMemberDetail> computeDayMemberDetails(
     }
 
     final member = teamMembers[ms.teamMemberId];
-    final name = member != null
-        ? '${member.firstName} ${member.lastName}'
-        : ms.teamMemberId;
+    final name = member?.displayName ?? ms.teamMemberId;
     final memberType = member?.memberType ?? TeamMemberType.STUDENT;
     final (:regularSecs, :overtimeSecs) = computeMemberSessionHours(
       ms,
@@ -275,8 +271,7 @@ AttendanceInsights computeInsights(
       if (!ms.hasCheckInTime()) continue;
       final session = sessions[ms.sessionId];
       if (session == null) continue;
-      locCounts[session.locationId] =
-          (locCounts[session.locationId] ?? 0) + 1;
+      locCounts[session.locationId] = (locCounts[session.locationId] ?? 0) + 1;
     }
     if (locCounts.isNotEmpty) {
       final topLocId = locCounts.entries

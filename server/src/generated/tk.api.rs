@@ -1808,15 +1808,27 @@ pub mod session_service_server {
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GetSettingsRequest {}
-#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GetSettingsResponse {
     #[prost(message, optional, tag = "1")]
     pub settings: ::core::option::Option<super::db::Settings>,
 }
-#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct UpdateSettingsRequest {
     #[prost(int64, tag = "1")]
     pub next_session_threshold_secs: i64,
+    #[prost(string, tag = "2")]
+    pub discord_bot_token: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub discord_guild_id: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub discord_channel_id: ::prost::alloc::string::String,
+    #[prost(int64, tag = "5")]
+    pub discord_reminder_mins: i64,
+    #[prost(bool, tag = "6")]
+    pub discord_self_link_enabled: bool,
+    #[prost(bool, tag = "7")]
+    pub discord_name_sync_enabled: bool,
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct UpdateSettingsResponse {}
@@ -1824,6 +1836,36 @@ pub struct UpdateSettingsResponse {}
 pub struct PurgeDatabaseRequest {}
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PurgeDatabaseResponse {}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct DiscordRole {
+    #[prost(string, tag = "1")]
+    pub id: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub name: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct GetDiscordRolesRequest {}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetDiscordRolesResponse {
+    #[prost(message, repeated, tag = "1")]
+    pub roles: ::prost::alloc::vec::Vec<DiscordRole>,
+}
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct ImportDiscordMembersRequest {
+    #[prost(string, tag = "1")]
+    pub role_id: ::prost::alloc::string::String,
+    #[prost(enumeration = "super::db::TeamMemberType", tag = "2")]
+    pub member_type: i32,
+}
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct ImportDiscordMembersResponse {
+    #[prost(int32, tag = "1")]
+    pub imported: i32,
+    #[prost(int32, tag = "2")]
+    pub linked: i32,
+    #[prost(int32, tag = "3")]
+    pub already_linked: i32,
+}
 /// Generated client implementations.
 pub mod settings_service_client {
     #![allow(
@@ -1987,6 +2029,56 @@ pub mod settings_service_client {
                 .insert(GrpcMethod::new("tk.api.SettingsService", "PurgeDatabase"));
             self.inner.unary(req, path, codec).await
         }
+        pub async fn get_discord_roles(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetDiscordRolesRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetDiscordRolesResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.SettingsService/GetDiscordRoles",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("tk.api.SettingsService", "GetDiscordRoles"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn import_discord_members(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ImportDiscordMembersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::ImportDiscordMembersResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/tk.api.SettingsService/ImportDiscordMembers",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(
+                    GrpcMethod::new("tk.api.SettingsService", "ImportDiscordMembers"),
+                );
+            self.inner.unary(req, path, codec).await
+        }
     }
 }
 /// Generated server implementations.
@@ -2021,6 +2113,20 @@ pub mod settings_service_server {
             request: tonic::Request<super::PurgeDatabaseRequest>,
         ) -> std::result::Result<
             tonic::Response<super::PurgeDatabaseResponse>,
+            tonic::Status,
+        >;
+        async fn get_discord_roles(
+            &self,
+            request: tonic::Request<super::GetDiscordRolesRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::GetDiscordRolesResponse>,
+            tonic::Status,
+        >;
+        async fn import_discord_members(
+            &self,
+            request: tonic::Request<super::ImportDiscordMembersRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::ImportDiscordMembersResponse>,
             tonic::Status,
         >;
     }
@@ -2222,6 +2328,101 @@ pub mod settings_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let method = PurgeDatabaseSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.SettingsService/GetDiscordRoles" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetDiscordRolesSvc<T: SettingsService>(pub Arc<T>);
+                    impl<
+                        T: SettingsService,
+                    > tonic::server::UnaryService<super::GetDiscordRolesRequest>
+                    for GetDiscordRolesSvc<T> {
+                        type Response = super::GetDiscordRolesResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::GetDiscordRolesRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as SettingsService>::get_discord_roles(&inner, request)
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = GetDiscordRolesSvc(inner);
+                        let codec = tonic_prost::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/tk.api.SettingsService/ImportDiscordMembers" => {
+                    #[allow(non_camel_case_types)]
+                    struct ImportDiscordMembersSvc<T: SettingsService>(pub Arc<T>);
+                    impl<
+                        T: SettingsService,
+                    > tonic::server::UnaryService<super::ImportDiscordMembersRequest>
+                    for ImportDiscordMembersSvc<T> {
+                        type Response = super::ImportDiscordMembersResponse;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ImportDiscordMembersRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as SettingsService>::import_discord_members(
+                                        &inner,
+                                        request,
+                                    )
+                                    .await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let method = ImportDiscordMembersSvc(inner);
                         let codec = tonic_prost::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -2684,9 +2885,11 @@ pub struct CreateTeamMemberRequest {
     #[prost(enumeration = "super::db::TeamMemberType", tag = "3")]
     pub member_type: i32,
     #[prost(string, optional, tag = "4")]
-    pub alias: ::core::option::Option<::prost::alloc::string::String>,
+    pub display_name: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(string, optional, tag = "5")]
-    pub secondary_alias: ::core::option::Option<::prost::alloc::string::String>,
+    pub rfid_tag: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "6")]
+    pub discord_username: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct CreateTeamMemberResponse {}
@@ -2701,9 +2904,11 @@ pub struct UpdateTeamMemberRequest {
     #[prost(enumeration = "super::db::TeamMemberType", tag = "4")]
     pub member_type: i32,
     #[prost(string, optional, tag = "5")]
-    pub alias: ::core::option::Option<::prost::alloc::string::String>,
+    pub display_name: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(string, optional, tag = "6")]
-    pub secondary_alias: ::core::option::Option<::prost::alloc::string::String>,
+    pub rfid_tag: ::core::option::Option<::prost::alloc::string::String>,
+    #[prost(string, optional, tag = "7")]
+    pub discord_username: ::core::option::Option<::prost::alloc::string::String>,
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct UpdateTeamMemberResponse {}

@@ -1,3 +1,4 @@
+pub mod discord;
 pub mod health;
 pub mod location;
 pub mod schedule;

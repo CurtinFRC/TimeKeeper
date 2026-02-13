@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:time_keeper/generated/common/common.pbenum.dart';
 import 'package:time_keeper/providers/auth_provider.dart';
 import 'package:time_keeper/utils/permissions.dart';
+import 'package:time_keeper/providers/location_provider.dart';
 import 'package:time_keeper/providers/session_provider.dart';
 import 'package:time_keeper/hooks/use_pcsc_scanner.dart';
 import 'package:time_keeper/utils/time.dart';
@@ -21,11 +22,19 @@ class HomeView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionList = ref.watch(sessionsProvider);
+    final deviceLocationId = ref.watch(currentLocationProvider);
+    final locations = ref.watch(locationsProvider);
 
     // filter unfinished sessions sorted by start time
     final unfinishedSessions =
         sessionList.values
-            .where((session) => !session.finished && session.hasStartTime())
+            .where(
+              (session) =>
+                  !session.finished &&
+                  session.hasStartTime() &&
+                  (deviceLocationId == null ||
+                      session.locationId == deviceLocationId),
+            )
             .toList()
           ..sort(
             (a, b) =>
@@ -80,6 +89,10 @@ class HomeView extends HookConsumerWidget {
         SessionInfoBar(
           currentSession: currentSession,
           nextSession: nextSession,
+          locations: locations,
+          deviceLocationName: deviceLocationId != null
+              ? locations[deviceLocationId]?.location
+              : null,
         ),
         Expanded(child: CheckedInList()),
       ],

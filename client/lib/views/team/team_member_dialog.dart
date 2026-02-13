@@ -18,8 +18,9 @@ void showTeamMemberDialog(
   String? existingFirstName,
   String? existingLastName,
   TeamMemberType? existingMemberType,
-  String? existingAlias,
-  String? existingSecondaryAlias,
+  String? existingDisplayName,
+  String? existingRfidTag,
+  String? existingDiscordUsername,
 }) {
   final isEdit = id != null;
 
@@ -31,8 +32,9 @@ void showTeamMemberDialog(
       initialFirstName: existingFirstName,
       initialLastName: existingLastName,
       initialMemberType: existingMemberType,
-      initialAlias: existingAlias,
-      initialSecondaryAlias: existingSecondaryAlias,
+      initialDisplayName: existingDisplayName,
+      initialRfidTag: existingRfidTag,
+      initialDiscordUsername: existingDiscordUsername,
     ),
     actions: const [],
   ).show(context);
@@ -65,8 +67,9 @@ class _TeamMemberForm extends HookConsumerWidget {
   final String? initialFirstName;
   final String? initialLastName;
   final TeamMemberType? initialMemberType;
-  final String? initialAlias;
-  final String? initialSecondaryAlias;
+  final String? initialDisplayName;
+  final String? initialRfidTag;
+  final String? initialDiscordUsername;
 
   const _TeamMemberForm({
     required this.isEdit,
@@ -74,8 +77,9 @@ class _TeamMemberForm extends HookConsumerWidget {
     this.initialFirstName,
     this.initialLastName,
     this.initialMemberType,
-    this.initialAlias,
-    this.initialSecondaryAlias,
+    this.initialDisplayName,
+    this.initialRfidTag,
+    this.initialDiscordUsername,
   });
 
   @override
@@ -86,9 +90,14 @@ class _TeamMemberForm extends HookConsumerWidget {
     final lastNameController = useTextEditingController(
       text: initialLastName ?? '',
     );
-    final aliasController = useTextEditingController(text: initialAlias ?? '');
-    final secondaryAliasController = useTextEditingController(
-      text: initialSecondaryAlias ?? '',
+    final displayNameController = useTextEditingController(
+      text: initialDisplayName ?? '',
+    );
+    final rfidTagController = useTextEditingController(
+      text: initialRfidTag ?? '',
+    );
+    final discordUsernameController = useTextEditingController(
+      text: initialDiscordUsername ?? '',
     );
     final memberType = useState<TeamMemberType>(
       initialMemberType ?? TeamMemberType.STUDENT,
@@ -145,9 +154,9 @@ class _TeamMemberForm extends HookConsumerWidget {
           ),
           const SizedBox(height: 16),
           TextField(
-            controller: aliasController,
+            controller: displayNameController,
             decoration: const InputDecoration(
-              labelText: 'Alias (optional)',
+              labelText: 'Display Name (optional)',
               border: OutlineInputBorder(),
             ),
           ),
@@ -156,16 +165,24 @@ class _TeamMemberForm extends HookConsumerWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: secondaryAliasController,
+                  controller: rfidTagController,
                   decoration: const InputDecoration(
-                    labelText: 'Secondary Alias (optional)',
+                    labelText: 'RFID Tag (optional)',
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
               const SizedBox(width: 12),
-              RfidScanButton(controller: secondaryAliasController),
+              RfidScanButton(controller: rfidTagController),
             ],
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: discordUsernameController,
+            decoration: const InputDecoration(
+              labelText: 'Discord Username (optional)',
+              border: OutlineInputBorder(),
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -184,11 +201,14 @@ class _TeamMemberForm extends HookConsumerWidget {
                     : () async {
                         final firstName = firstNameController.text.trim();
                         final lastName = lastNameController.text.trim();
-                        final alias = aliasController.text.trim();
-                        final secondaryAlias = secondaryAliasController.text
+                        final displayName = displayNameController.text.trim();
+                        final rfidTag = rfidTagController.text.trim();
+                        final discordUsername = discordUsernameController.text
                             .trim();
                         final type = memberType.value;
-                        final displayName = '$firstName $lastName';
+                        final label = displayName.isNotEmpty
+                            ? displayName
+                            : '$firstName $lastName'.trim();
 
                         isLoading.value = true;
                         try {
@@ -202,9 +222,12 @@ class _TeamMemberForm extends HookConsumerWidget {
                                   firstName: firstName,
                                   lastName: lastName,
                                   memberType: type,
-                                  alias: alias.isNotEmpty ? alias : null,
-                                  secondaryAlias: secondaryAlias.isNotEmpty
-                                      ? secondaryAlias
+                                  displayName: displayName.isNotEmpty
+                                      ? displayName
+                                      : null,
+                                  rfidTag: rfidTag.isNotEmpty ? rfidTag : null,
+                                  discordUsername: discordUsername.isNotEmpty
+                                      ? discordUsername
                                       : null,
                                 ),
                               ),
@@ -216,9 +239,12 @@ class _TeamMemberForm extends HookConsumerWidget {
                                   firstName: firstName,
                                   lastName: lastName,
                                   memberType: type,
-                                  alias: alias.isNotEmpty ? alias : null,
-                                  secondaryAlias: secondaryAlias.isNotEmpty
-                                      ? secondaryAlias
+                                  displayName: displayName.isNotEmpty
+                                      ? displayName
+                                      : null,
+                                  rfidTag: rfidTag.isNotEmpty ? rfidTag : null,
+                                  discordUsername: discordUsername.isNotEmpty
+                                      ? discordUsername
                                       : null,
                                 ),
                               ),
@@ -231,8 +257,8 @@ class _TeamMemberForm extends HookConsumerWidget {
                               case GrpcSuccess():
                                 SnackBarDialog.success(
                                   message: isEdit
-                                      ? '"$displayName" updated successfully'
-                                      : '"$displayName" created successfully',
+                                      ? '"$label" updated successfully'
+                                      : '"$label" created successfully',
                                 ).show(context);
                               case GrpcFailure():
                                 SnackBarDialog.fromGrpcStatus(

@@ -24,7 +24,7 @@ impl SettingsRepository for Settings {
   fn set(record: &Settings) -> Result<()> {
     let db = get_db()?;
     let table = db.get_table(SETTINGS_TABLE_NAME);
-    let data = DataInsert { id: Some(SETTINGS_KEY.to_string()), value: *record, search_indexes: vec![] };
+    let data = DataInsert { id: Some(SETTINGS_KEY.to_string()), value: record.clone(), search_indexes: vec![] };
     table.insert(data)?;
     Ok(())
   }
@@ -36,7 +36,15 @@ impl SettingsRepository for Settings {
     if let Some(s) = table.get::<Settings>(SETTINGS_KEY)? {
       Ok(s)
     } else {
-      let default = Settings { next_session_threshold_secs: DEFAULT_NEXT_SESSION_THRESHOLD_SECS };
+      let default = Settings {
+        next_session_threshold_secs: DEFAULT_NEXT_SESSION_THRESHOLD_SECS,
+        discord_bot_token: String::new(),
+        discord_guild_id: String::new(),
+        discord_channel_id: String::new(),
+        discord_reminder_mins: 10,
+        discord_self_link_enabled: false,
+        discord_name_sync_enabled: true,
+      };
       Self::set(&default)?;
       Ok(default)
     }

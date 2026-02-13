@@ -53,8 +53,7 @@ Future<void> handleKioskScan({
 
   final memberId = match.key;
   final member = match.value;
-  final alias = member.alias.isNotEmpty ? ' (${member.alias})' : '';
-  final name = '${member.firstName} ${member.lastName}$alias';
+  final name = member.displayName;
 
   _log.i('Scan matched member: $name');
 
@@ -211,34 +210,16 @@ List<int> _bigIntToBytes(BigInt value) {
   return bytes.reversed.toList();
 }
 
-/// Tries to match any of the UID [variants] against team member fields.
-/// Checks: first+last name, alias, secondary alias.
+/// Tries to match any of the UID [variants] against team member RFID tags.
 MapEntry<String, TeamMember>? _findMember(
   Set<String> variants,
   Map<String, TeamMember> teamMembers,
 ) {
   for (final entry in teamMembers.entries) {
-    final member = entry.value;
-    final fullName = '${member.firstName} ${member.lastName}'
-        .trim()
-        .toLowerCase();
-
-    if (variants.contains(fullName)) return entry;
-  }
-
-  for (final entry in teamMembers.entries) {
-    final member = entry.value;
-
-    if (member.alias.isNotEmpty &&
-        variants.contains(member.alias.trim().toLowerCase())) {
-      return entry;
-    }
-
-    if (member.secondaryAlias.isNotEmpty &&
-        variants.contains(member.secondaryAlias.trim().toLowerCase())) {
+    final rfid = entry.value.rfidTag;
+    if (rfid.isNotEmpty && variants.contains(rfid.trim().toLowerCase())) {
       return entry;
     }
   }
-
   return null;
 }

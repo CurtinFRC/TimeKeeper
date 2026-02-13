@@ -76,20 +76,48 @@ const TeamMember$json = {
       '6': '.tk.db.TeamMemberType',
       '10': 'memberType'
     },
-    {'1': 'alias', '3': 4, '4': 1, '5': 9, '9': 0, '10': 'alias', '17': true},
     {
-      '1': 'secondary_alias',
+      '1': 'display_name',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'displayName',
+      '17': true
+    },
+    {
+      '1': 'rfid_tag',
       '3': 5,
       '4': 1,
       '5': 9,
       '9': 1,
-      '10': 'secondaryAlias',
+      '10': 'rfidTag',
+      '17': true
+    },
+    {
+      '1': 'mobile_number',
+      '3': 6,
+      '4': 1,
+      '5': 9,
+      '9': 2,
+      '10': 'mobileNumber',
+      '17': true
+    },
+    {
+      '1': 'discord_username',
+      '3': 7,
+      '4': 1,
+      '5': 9,
+      '9': 3,
+      '10': 'discordUsername',
       '17': true
     },
   ],
   '8': [
-    {'1': '_alias'},
-    {'1': '_secondary_alias'},
+    {'1': '_display_name'},
+    {'1': '_rfid_tag'},
+    {'1': '_mobile_number'},
+    {'1': '_discord_username'},
   ],
 };
 
@@ -97,9 +125,11 @@ const TeamMember$json = {
 final $typed_data.Uint8List teamMemberDescriptor = $convert.base64Decode(
     'CgpUZWFtTWVtYmVyEh0KCmZpcnN0X25hbWUYASABKAlSCWZpcnN0TmFtZRIbCglsYXN0X25hbW'
     'UYAiABKAlSCGxhc3ROYW1lEjYKC21lbWJlcl90eXBlGAMgASgOMhUudGsuZGIuVGVhbU1lbWJl'
-    'clR5cGVSCm1lbWJlclR5cGUSGQoFYWxpYXMYBCABKAlIAFIFYWxpYXOIAQESLAoPc2Vjb25kYX'
-    'J5X2FsaWFzGAUgASgJSAFSDnNlY29uZGFyeUFsaWFziAEBQggKBl9hbGlhc0ISChBfc2Vjb25k'
-    'YXJ5X2FsaWFz');
+    'clR5cGVSCm1lbWJlclR5cGUSJgoMZGlzcGxheV9uYW1lGAQgASgJSABSC2Rpc3BsYXlOYW1liA'
+    'EBEh4KCHJmaWRfdGFnGAUgASgJSAFSB3JmaWRUYWeIAQESKAoNbW9iaWxlX251bWJlchgGIAEo'
+    'CUgCUgxtb2JpbGVOdW1iZXKIAQESLgoQZGlzY29yZF91c2VybmFtZRgHIAEoCUgDUg9kaXNjb3'
+    'JkVXNlcm5hbWWIAQFCDwoNX2Rpc3BsYXlfbmFtZUILCglfcmZpZF90YWdCEAoOX21vYmlsZV9u'
+    'dW1iZXJCEwoRX2Rpc2NvcmRfdXNlcm5hbWU=');
 
 @$core.Deprecated('Use locationDescriptor instead')
 const Location$json = {
@@ -194,10 +224,45 @@ const Settings$json = {
       '5': 3,
       '10': 'nextSessionThresholdSecs'
     },
+    {'1': 'discord_bot_token', '3': 2, '4': 1, '5': 9, '10': 'discordBotToken'},
+    {'1': 'discord_guild_id', '3': 3, '4': 1, '5': 9, '10': 'discordGuildId'},
+    {
+      '1': 'discord_channel_id',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '10': 'discordChannelId'
+    },
+    {
+      '1': 'discord_reminder_mins',
+      '3': 5,
+      '4': 1,
+      '5': 3,
+      '10': 'discordReminderMins'
+    },
+    {
+      '1': 'discord_self_link_enabled',
+      '3': 6,
+      '4': 1,
+      '5': 8,
+      '10': 'discordSelfLinkEnabled'
+    },
+    {
+      '1': 'discord_name_sync_enabled',
+      '3': 7,
+      '4': 1,
+      '5': 8,
+      '10': 'discordNameSyncEnabled'
+    },
   ],
 };
 
 /// Descriptor for `Settings`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List settingsDescriptor = $convert.base64Decode(
     'CghTZXR0aW5ncxI9ChtuZXh0X3Nlc3Npb25fdGhyZXNob2xkX3NlY3MYASABKANSGG5leHRTZX'
-    'NzaW9uVGhyZXNob2xkU2Vjcw==');
+    'NzaW9uVGhyZXNob2xkU2VjcxIqChFkaXNjb3JkX2JvdF90b2tlbhgCIAEoCVIPZGlzY29yZEJv'
+    'dFRva2VuEigKEGRpc2NvcmRfZ3VpbGRfaWQYAyABKAlSDmRpc2NvcmRHdWlsZElkEiwKEmRpc2'
+    'NvcmRfY2hhbm5lbF9pZBgEIAEoCVIQZGlzY29yZENoYW5uZWxJZBIyChVkaXNjb3JkX3JlbWlu'
+    'ZGVyX21pbnMYBSABKANSE2Rpc2NvcmRSZW1pbmRlck1pbnMSOQoZZGlzY29yZF9zZWxmX2xpbm'
+    'tfZW5hYmxlZBgGIAEoCFIWZGlzY29yZFNlbGZMaW5rRW5hYmxlZBI5ChlkaXNjb3JkX25hbWVf'
+    'c3luY19lbmFibGVkGAcgASgIUhZkaXNjb3JkTmFtZVN5bmNFbmFibGVk');

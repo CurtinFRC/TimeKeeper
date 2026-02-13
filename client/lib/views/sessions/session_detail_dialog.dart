@@ -22,18 +22,19 @@ void showSessionDetailDialog(
       locations[session.locationId]?.location ?? session.locationId;
   final status = getSessionStatus(session);
 
-  final memberSessions = teamMemberSessions.values
-      .where((ms) => ms.sessionId == sessionId)
-      .toList()
-    ..sort((a, b) {
-      final aTime = a.hasCheckInTime()
-          ? a.checkInTime.toDateTime()
-          : DateTime(0);
-      final bTime = b.hasCheckInTime()
-          ? b.checkInTime.toDateTime()
-          : DateTime(0);
-      return aTime.compareTo(bTime);
-    });
+  final memberSessions =
+      teamMemberSessions.values
+          .where((ms) => ms.sessionId == sessionId)
+          .toList()
+        ..sort((a, b) {
+          final aTime = a.hasCheckInTime()
+              ? a.checkInTime.toDateTime()
+              : DateTime(0);
+          final bTime = b.hasCheckInTime()
+              ? b.checkInTime.toDateTime()
+              : DateTime(0);
+          return aTime.compareTo(bTime);
+        });
 
   final checkedOutCount = memberSessions
       .where((ms) => ms.hasCheckInTime() && ms.hasCheckOutTime())
@@ -73,9 +74,7 @@ void showSessionDetailDialog(
                   mainAxisSize: MainAxisSize.min,
                   children: memberSessions.map((ms) {
                     final member = teamMembers[ms.teamMemberId];
-                    final name = member != null
-                        ? '${member.firstName} ${member.lastName}'
-                        : ms.teamMemberId;
+                    final name = member?.displayName ?? ms.teamMemberId;
 
                     final checkIn = ms.hasCheckInTime()
                         ? formatTime(ms.checkInTime.toDateTime())

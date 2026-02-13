@@ -26,8 +26,7 @@ class MemberSearchList extends HookWidget {
             final query = searchText.value.toLowerCase();
             return member.firstName.toLowerCase().contains(query) ||
                 member.lastName.toLowerCase().contains(query) ||
-                member.alias.toLowerCase().contains(query) ||
-                member.secondaryAlias.toLowerCase().contains(query);
+                member.displayName.toLowerCase().contains(query);
           }).toList();
 
     return Column(
@@ -39,7 +38,7 @@ class MemberSearchList extends HookWidget {
           autofocus: true,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
-            hintText: 'Search by name or alias...',
+            hintText: 'Search by name...',
             prefixIcon: Icon(Icons.search),
           ),
           onChanged: (value) => searchText.value = value,
@@ -64,13 +63,8 @@ class MemberSearchList extends HookWidget {
                     final entry = filteredMembers[index];
                     final member = entry.value;
                     final memberId = entry.key;
-                    final alias =
-                        member.alias.isNotEmpty ? ' (${member.alias})' : '';
-
                     return ListTile(
-                      title: Text(
-                        '${member.firstName} ${member.lastName}$alias',
-                      ),
+                      title: Text(member.displayName),
                       subtitle: Text(member.memberType.name),
                       trailing: trailingBuilder(memberId, member),
                     );

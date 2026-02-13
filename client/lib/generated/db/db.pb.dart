@@ -155,15 +155,19 @@ class TeamMember extends $pb.GeneratedMessage {
     $core.String? firstName,
     $core.String? lastName,
     TeamMemberType? memberType,
-    $core.String? alias,
-    $core.String? secondaryAlias,
+    $core.String? displayName,
+    $core.String? rfidTag,
+    $core.String? mobileNumber,
+    $core.String? discordUsername,
   }) {
     final result = create();
     if (firstName != null) result.firstName = firstName;
     if (lastName != null) result.lastName = lastName;
     if (memberType != null) result.memberType = memberType;
-    if (alias != null) result.alias = alias;
-    if (secondaryAlias != null) result.secondaryAlias = secondaryAlias;
+    if (displayName != null) result.displayName = displayName;
+    if (rfidTag != null) result.rfidTag = rfidTag;
+    if (mobileNumber != null) result.mobileNumber = mobileNumber;
+    if (discordUsername != null) result.discordUsername = discordUsername;
     return result;
   }
 
@@ -184,8 +188,10 @@ class TeamMember extends $pb.GeneratedMessage {
     ..aOS(2, _omitFieldNames ? '' : 'lastName')
     ..aE<TeamMemberType>(3, _omitFieldNames ? '' : 'memberType',
         enumValues: TeamMemberType.values)
-    ..aOS(4, _omitFieldNames ? '' : 'alias')
-    ..aOS(5, _omitFieldNames ? '' : 'secondaryAlias')
+    ..aOS(4, _omitFieldNames ? '' : 'displayName')
+    ..aOS(5, _omitFieldNames ? '' : 'rfidTag')
+    ..aOS(6, _omitFieldNames ? '' : 'mobileNumber')
+    ..aOS(7, _omitFieldNames ? '' : 'discordUsername')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -234,22 +240,40 @@ class TeamMember extends $pb.GeneratedMessage {
   void clearMemberType() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get alias => $_getSZ(3);
+  $core.String get displayName => $_getSZ(3);
   @$pb.TagNumber(4)
-  set alias($core.String value) => $_setString(3, value);
+  set displayName($core.String value) => $_setString(3, value);
   @$pb.TagNumber(4)
-  $core.bool hasAlias() => $_has(3);
+  $core.bool hasDisplayName() => $_has(3);
   @$pb.TagNumber(4)
-  void clearAlias() => $_clearField(4);
+  void clearDisplayName() => $_clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get secondaryAlias => $_getSZ(4);
+  $core.String get rfidTag => $_getSZ(4);
   @$pb.TagNumber(5)
-  set secondaryAlias($core.String value) => $_setString(4, value);
+  set rfidTag($core.String value) => $_setString(4, value);
   @$pb.TagNumber(5)
-  $core.bool hasSecondaryAlias() => $_has(4);
+  $core.bool hasRfidTag() => $_has(4);
   @$pb.TagNumber(5)
-  void clearSecondaryAlias() => $_clearField(5);
+  void clearRfidTag() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get mobileNumber => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set mobileNumber($core.String value) => $_setString(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasMobileNumber() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearMobileNumber() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get discordUsername => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set discordUsername($core.String value) => $_setString(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasDiscordUsername() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearDiscordUsername() => $_clearField(7);
 }
 
 class Location extends $pb.GeneratedMessage {
@@ -499,10 +523,25 @@ class Session extends $pb.GeneratedMessage {
 class Settings extends $pb.GeneratedMessage {
   factory Settings({
     $fixnum.Int64? nextSessionThresholdSecs,
+    $core.String? discordBotToken,
+    $core.String? discordGuildId,
+    $core.String? discordChannelId,
+    $fixnum.Int64? discordReminderMins,
+    $core.bool? discordSelfLinkEnabled,
+    $core.bool? discordNameSyncEnabled,
   }) {
     final result = create();
     if (nextSessionThresholdSecs != null)
       result.nextSessionThresholdSecs = nextSessionThresholdSecs;
+    if (discordBotToken != null) result.discordBotToken = discordBotToken;
+    if (discordGuildId != null) result.discordGuildId = discordGuildId;
+    if (discordChannelId != null) result.discordChannelId = discordChannelId;
+    if (discordReminderMins != null)
+      result.discordReminderMins = discordReminderMins;
+    if (discordSelfLinkEnabled != null)
+      result.discordSelfLinkEnabled = discordSelfLinkEnabled;
+    if (discordNameSyncEnabled != null)
+      result.discordNameSyncEnabled = discordNameSyncEnabled;
     return result;
   }
 
@@ -520,6 +559,12 @@ class Settings extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'tk.db'),
       createEmptyInstance: create)
     ..aInt64(1, _omitFieldNames ? '' : 'nextSessionThresholdSecs')
+    ..aOS(2, _omitFieldNames ? '' : 'discordBotToken')
+    ..aOS(3, _omitFieldNames ? '' : 'discordGuildId')
+    ..aOS(4, _omitFieldNames ? '' : 'discordChannelId')
+    ..aInt64(5, _omitFieldNames ? '' : 'discordReminderMins')
+    ..aOB(6, _omitFieldNames ? '' : 'discordSelfLinkEnabled')
+    ..aOB(7, _omitFieldNames ? '' : 'discordNameSyncEnabled')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -548,6 +593,60 @@ class Settings extends $pb.GeneratedMessage {
   $core.bool hasNextSessionThresholdSecs() => $_has(0);
   @$pb.TagNumber(1)
   void clearNextSessionThresholdSecs() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get discordBotToken => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set discordBotToken($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasDiscordBotToken() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDiscordBotToken() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get discordGuildId => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set discordGuildId($core.String value) => $_setString(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasDiscordGuildId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearDiscordGuildId() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get discordChannelId => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set discordChannelId($core.String value) => $_setString(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasDiscordChannelId() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearDiscordChannelId() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get discordReminderMins => $_getI64(4);
+  @$pb.TagNumber(5)
+  set discordReminderMins($fixnum.Int64 value) => $_setInt64(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasDiscordReminderMins() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearDiscordReminderMins() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.bool get discordSelfLinkEnabled => $_getBF(5);
+  @$pb.TagNumber(6)
+  set discordSelfLinkEnabled($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasDiscordSelfLinkEnabled() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearDiscordSelfLinkEnabled() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.bool get discordNameSyncEnabled => $_getBF(6);
+  @$pb.TagNumber(7)
+  set discordNameSyncEnabled($core.bool value) => $_setBool(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasDiscordNameSyncEnabled() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearDiscordNameSyncEnabled() => $_clearField(7);
 }
 
 const $core.bool _omitFieldNames =

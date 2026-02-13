@@ -68,16 +68,17 @@ class _LinkCardContent extends ConsumerWidget {
                           firstName: member.firstName,
                           lastName: member.lastName,
                           memberType: member.memberType,
-                          alias: member.alias.isNotEmpty ? member.alias : null,
-                          secondaryAlias: scannedUid,
+                          displayName: member.displayName.isNotEmpty
+                              ? member.displayName
+                              : null,
+                          rfidTag: scannedUid,
                         ),
                       ),
                     );
 
                     if (!context.mounted) return;
 
-                    final name =
-                        '${member.firstName} ${member.lastName}';
+                    final name = member.displayName;
 
                     switch (result) {
                       case GrpcSuccess():
