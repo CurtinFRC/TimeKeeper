@@ -119,8 +119,8 @@ jobs:
         if: matrix.archive == 'tar.gz'
         run: |
           mkdir -p staging
-          cp target/${{ matrix.target }}/release/main staging/timekeeper-server
-          chmod +x staging/timekeeper-server
+          cp target/${{ matrix.target }}/release/main staging/server
+          chmod +x staging/server
           cd staging
           tar -czf ../${{ matrix.artifact }}.tar.gz .
 
@@ -128,7 +128,7 @@ jobs:
         if: matrix.archive == 'zip'
         run: |
           mkdir -p staging
-          cp target/${{ matrix.target }}/release/main.exe staging/timekeeper-server.exe
+          cp target/${{ matrix.target }}/release/main.exe staging/server.exe
           cd staging
           zip -r ../${{ matrix.artifact }}.zip .
 
@@ -290,7 +290,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            systemctl stop timekeeper-server || true
+            systemctl stop server || true
 
       - name: Deploy to server
         uses: appleboy/scp-action@v1
@@ -299,7 +299,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "staging/timekeeper-server,staging/client"
+          source: "staging/server,staging/client"
           target: "/root/timekeeper/"
           overwrite: true
           strip_components: 1
@@ -312,8 +312,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            chmod +x /root/timekeeper/timekeeper-server
-            cat > /etc/systemd/system/timekeeper-server.service << 'SVCEOF'
+            chmod +x /root/timekeeper/server
+            cat > /etc/systemd/system/server.service << 'SVCEOF'
             [Unit]
             Description=TimeKeeper Server
             After=network.target
@@ -321,7 +321,7 @@ jobs:
             [Service]
             Type=simple
             WorkingDirectory=/root/timekeeper
-            ExecStart=/root/timekeeper/timekeeper-server
+            ExecStart=/root/timekeeper/server
             Restart=always
             RestartSec=10
 
@@ -331,8 +331,8 @@ jobs:
             WantedBy=default.target
             SVCEOF
             systemctl daemon-reload
-            systemctl restart timekeeper-server
-            systemctl status timekeeper-server
+            systemctl restart server
+            systemctl status server
 
   # ── Create GitHub Release ───────────────────────────────────────────
   release:
