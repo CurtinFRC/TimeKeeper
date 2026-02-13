@@ -14,7 +14,9 @@ use crate::{
   core::scheduler::ScheduledService,
   generated::db::{Location, Session, Settings, TeamMember},
   modules::{
-    location::LocationRepository, session::SessionRepository, settings::SettingsRepository,
+    location::LocationRepository,
+    session::SessionRepository,
+    settings::{DEFAULT_END_REMINDER_MESSAGE, DEFAULT_START_REMINDER_MESSAGE, SettingsRepository},
     team_member::TeamMemberRepository,
   },
 };
@@ -47,9 +49,21 @@ impl ScheduledService for DiscordNotificationService {
       return Ok(());
     }
 
-    let reminder_secs = settings.discord_reminder_mins * 60;
+    let start_reminder_secs = settings.discord_start_reminder_mins * 60;
+    let end_reminder_secs = settings.discord_end_reminder_mins * 60;
     let channel_id: u64 =
       settings.discord_channel_id.parse().map_err(|e| anyhow::anyhow!("Invalid channel ID: {e}"))?;
+
+    let start_msg_template = if settings.discord_start_reminder_message.is_empty() {
+      DEFAULT_START_REMINDER_MESSAGE
+    } else {
+      &settings.discord_start_reminder_message
+    };
+    let end_msg_template = if settings.discord_end_reminder_message.is_empty() {
+      DEFAULT_END_REMINDER_MESSAGE
+    } else {
+      &settings.discord_end_reminder_message
+    };
 
     let http = Http::new(&settings.discord_bot_token);
     let channel = ChannelId::new(channel_id);
@@ -74,24 +88,27 @@ impl ScheduledService for DiscordNotificationService {
       let location = locations.get(&session.location_id).map_or("Unknown", |l| l.location.as_str());
 
       // Session starting soon reminder
-      let time_until_start = start_secs - now_secs;
-      if time_until_start > 0 && time_until_start <= reminder_secs && !self.reminded_start.contains(id) {
-        let mins = time_until_start / 60;
-        messages.push(format!("@here Session starting in ~{mins} minutes @ {location}!"));
-        self.reminded_start.insert(id.clone());
+      if start_reminder_secs > 0 {
+        let time_until_start = start_secs - now_secs;
+        if time_until_start > 0 && time_until_start <= start_reminder_secs && !self.reminded_start.contains(id) {
+          let mins = time_until_start / 60;
+          messages.push(start_msg_template.replace("{mins}", &mins.to_string()).replace("{location}", location));
+          self.reminded_start.insert(id.clone());
+        }
       }
 
-      // Session ending soon reminder (fires within reminder window before end time)
-      let time_until_end = end_secs - now_secs;
-      if time_until_end > 0
-        && time_until_end <= reminder_secs
-        && now_secs >= start_secs
-        && !self.reminded_end.contains(id)
-      {
-        let mins = time_until_end / 60;
-        messages
-          .push(format!("@here Session at {location} is ending in ~{mins} minutes \u{2014} don't forget to sign out!"));
-        self.reminded_end.insert(id.clone());
+      // Session ending soon reminder
+      if end_reminder_secs > 0 {
+        let time_until_end = end_secs - now_secs;
+        if time_until_end > 0
+          && time_until_end <= end_reminder_secs
+          && now_secs >= start_secs
+          && !self.reminded_end.contains(id)
+        {
+          let mins = time_until_end / 60;
+          messages.push(end_msg_template.replace("{mins}", &mins.to_string()).replace("{location}", location));
+          self.reminded_end.insert(id.clone());
+        }
       }
     }
 
