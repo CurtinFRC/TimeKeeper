@@ -64,7 +64,7 @@ impl EventHandler for Handler {
       return;
     }
 
-    if !Settings::get().map_or(false, |s| s.discord_rsvp_reactions_enabled) {
+    if !Settings::get().is_ok_and(|s| s.discord_rsvp_reactions_enabled) {
       return;
     }
 
@@ -101,7 +101,7 @@ impl EventHandler for Handler {
       return;
     }
 
-    if !Settings::get().map_or(false, |s| s.discord_rsvp_reactions_enabled) {
+    if !Settings::get().is_ok_and(|s| s.discord_rsvp_reactions_enabled) {
       return;
     }
 
