@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:time_keeper/colors.dart';
 import 'package:time_keeper/generated/api/settings.pbgrpc.dart';
 import 'package:time_keeper/helpers/grpc_call_wrapper.dart';
+import 'package:time_keeper/providers/health_provider.dart';
 import 'package:time_keeper/providers/settings_provider.dart';
 import 'package:time_keeper/utils/grpc_result.dart';
 
@@ -23,6 +23,12 @@ class Branding {
     required this.secondaryColor,
     this.logoBytes,
   });
+
+  bool isEqual(Branding other) {
+    return primaryColor.toARGB32() == other.primaryColor.toARGB32() &&
+        secondaryColor.toARGB32() == other.secondaryColor.toARGB32() &&
+        listEquals(logoBytes, other.logoBytes);
+  }
 }
 
 Color? _parseHexColor(String hex) {
@@ -38,7 +44,14 @@ Color? _parseHexColor(String hex) {
 class BrandingNotifier extends _$BrandingNotifier {
   @override
   Branding build() {
-    _fetchBranding();
+    ref.listen<AsyncValue<bool>>(isConnectedProvider, (prev, next) {
+      final wasConnected = prev?.value ?? false;
+      final isConnected = next.value ?? false;
+      if (!wasConnected && isConnected) {
+        _fetchBranding();
+      }
+    });
+
     return Branding(
       primaryColor: createMaterialColor(_defaultPrimaryColor),
       secondaryColor: createMaterialColor(_defaultSecondaryColor),
@@ -70,11 +83,15 @@ class BrandingNotifier extends _$BrandingNotifier {
       logoBytes = Uint8List.fromList(logoResult.data.logo);
     }
 
-    state = Branding(
+    final newBranding = Branding(
       primaryColor: createMaterialColor(primary ?? _defaultPrimaryColor),
       secondaryColor: createMaterialColor(secondary ?? _defaultSecondaryColor),
       logoBytes: logoBytes,
     );
+
+    if (!state.isEqual(newBranding)) {
+      state = newBranding;
+    }
   }
 
   Future<void> refresh() async {
