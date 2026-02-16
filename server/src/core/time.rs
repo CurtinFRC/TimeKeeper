@@ -37,11 +37,11 @@ pub fn format_date(secs: i64, tz: &Tz) -> String {
   dt_local.format("%B %-d").to_string()
 }
 
-/// Format seconds since epoch as a short datetime (e.g. "Thu Feb 19, 3:00PM")
+/// Format seconds since epoch as a short datetime (e.g. "Thu, Feb 19, 3:00PM")
 pub fn format_datetime(secs: i64, tz: &Tz) -> String {
   let dt_utc = Utc.timestamp_opt(secs, 0).single().unwrap_or_else(|| Utc.timestamp_opt(0, 0).single().unwrap());
   let dt_local = tz.from_utc_datetime(&dt_utc.naive_utc());
-  dt_local.format("%a %b %e, %-I:%M%p").to_string()
+  dt_local.format("%a, %b %e, %-I:%M%p").to_string()
 }
 
 /// Format a start and end time as a human-readable range (e.g. "3:00PM to 8:00PM")

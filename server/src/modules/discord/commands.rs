@@ -2,7 +2,7 @@ use chrono::Utc;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
 
-use crate::core::time::{format_datetime, format_time_range, parse_tz};
+use crate::core::time::{format_date, format_datetime, format_time, parse_tz};
 use crate::{
   generated::{
     common::Timestamp,
@@ -148,17 +148,20 @@ fn leaderboard(args: &str) -> String {
 }
 
 pub fn sessions() -> String {
+  // Load settings
   let settings = match Settings::get() {
     Ok(s) => s,
     Err(e) => return format!("Error loading settings: {e}"),
   };
   let tz = parse_tz(&settings.timezone);
 
+  // Load sessions
   let sessions = match Session::get_all() {
     Ok(s) => s,
     Err(e) => return format!("Error loading sessions: {e}"),
   };
 
+  // Load locations
   let locations_map = match Location::get_all() {
     Ok(l) => l,
     Err(e) => return format!("Error loading locations: {e}"),
@@ -169,16 +172,17 @@ pub fn sessions() -> String {
   let mut active = Vec::new();
   let mut upcoming = Vec::new();
 
-  for (id, session) in &sessions {
+  // Categorize sessions
+  for (_id, session) in &sessions {
     let start = session.start_time.as_ref().map_or(0, |t| t.seconds);
     let end = session.end_time.as_ref().map_or(0, |t| t.seconds);
     let location =
       session.location_id.as_str().pipe_ref(|lid| locations_map.get(*lid)).map_or("Unknown", |l| l.location.as_str());
 
     if !session.finished && start <= now_secs {
-      active.push((id, start, end, location.to_string()));
+      active.push((start, end, location.to_string()));
     } else if start > now_secs {
-      upcoming.push((id, start, end, location.to_string()));
+      upcoming.push((start, end, location.to_string()));
     }
   }
 
@@ -188,18 +192,32 @@ pub fn sessions() -> String {
 
   let mut lines = Vec::new();
 
+  // Format active sessions
   if !active.is_empty() {
     lines.push("**Active Sessions**".to_string());
-    for (_, start, end, loc) in &active {
-      lines.push(format!("- {} @ {}", format_time_range(*start, *end, &tz), loc));
+    for (start, end, loc) in &active {
+      let dt_string = format_datetime(*start, &tz);
+      let start_day = dt_string.split(',').next().unwrap_or("").to_string(); // own the String now
+      let start_date = format_date(*start, &tz);
+      let start_time = format_time(*start, &tz);
+      let end_time = format_time(*end, &tz);
+
+      lines.push(format!("[{start_day}, {start_date}]: {start_time}–{end_time} @ {loc}"));
     }
   }
 
+  // Format upcoming sessions
   if !upcoming.is_empty() {
-    upcoming.sort_by_key(|(_, start, _, _)| *start);
+    upcoming.sort_by_key(|(start, _, _)| *start);
     lines.push("**Upcoming Sessions**".to_string());
-    for (_, start, end, loc) in upcoming.iter().take(5) {
-      lines.push(format!("- {} @ {}", format_time_range(*start, *end, &tz), loc));
+    for (start, end, loc) in upcoming.iter().take(5) {
+      let dt_string = format_datetime(*start, &tz);
+      let start_day = dt_string.split(',').next().unwrap_or("").to_string(); // own the String now
+      let start_date = format_date(*start, &tz);
+      let start_time = format_time(*start, &tz);
+      let end_time = format_time(*end, &tz);
+
+      lines.push(format!("[{start_day}, {start_date}]: {start_time}–{end_time} @ {loc}"));
     }
   }
 
