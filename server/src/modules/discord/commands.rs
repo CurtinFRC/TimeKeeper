@@ -2,7 +2,7 @@ use chrono::Utc;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
 
-use crate::core::time::{format_datetime, parse_tz};
+use crate::core::time::{format_datetime, format_time_range, parse_tz};
 use crate::{
   generated::{
     common::Timestamp,
@@ -147,16 +147,18 @@ fn leaderboard(args: &str) -> String {
   lines.join("\n")
 }
 
-fn sessions() -> String {
+pub fn sessions() -> String {
   let settings = match Settings::get() {
     Ok(s) => s,
     Err(e) => return format!("Error loading settings: {e}"),
   };
   let tz = parse_tz(&settings.timezone);
+
   let sessions = match Session::get_all() {
     Ok(s) => s,
     Err(e) => return format!("Error loading sessions: {e}"),
   };
+
   let locations_map = match Location::get_all() {
     Ok(l) => l,
     Err(e) => return format!("Error loading locations: {e}"),
@@ -164,8 +166,8 @@ fn sessions() -> String {
 
   let now_secs = Utc::now().timestamp();
 
-  let mut active: Vec<_> = Vec::new();
-  let mut upcoming: Vec<_> = Vec::new();
+  let mut active = Vec::new();
+  let mut upcoming = Vec::new();
 
   for (id, session) in &sessions {
     let start = session.start_time.as_ref().map_or(0, |t| t.seconds);
@@ -180,16 +182,16 @@ fn sessions() -> String {
     }
   }
 
-  let mut lines = Vec::new();
-
   if active.is_empty() && upcoming.is_empty() {
     return "No active or upcoming sessions.".to_string();
   }
 
+  let mut lines = Vec::new();
+
   if !active.is_empty() {
     lines.push("**Active Sessions**".to_string());
     for (_, start, end, loc) in &active {
-      lines.push(format!("- {} - {} @ {loc}", format_datetime(*start, &tz), format_datetime(*end, &tz)));
+      lines.push(format!("- {} @ {}", format_time_range(*start, *end, &tz), loc));
     }
   }
 
@@ -197,7 +199,7 @@ fn sessions() -> String {
     upcoming.sort_by_key(|(_, start, _, _)| *start);
     lines.push("**Upcoming Sessions**".to_string());
     for (_, start, end, loc) in upcoming.iter().take(5) {
-      lines.push(format!("- {} - {} @ {loc}", format_datetime(*start, &tz), format_datetime(*end, &tz)));
+      lines.push(format!("- {} @ {}", format_time_range(*start, *end, &tz), loc));
     }
   }
 
