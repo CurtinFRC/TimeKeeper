@@ -173,7 +173,7 @@ pub fn sessions() -> String {
   let mut upcoming = Vec::new();
 
   // Categorize sessions
-  for (_id, session) in &sessions {
+  for session in sessions.values() {
     let start = session.start_time.as_ref().map_or(0, |t| t.seconds);
     let end = session.end_time.as_ref().map_or(0, |t| t.seconds);
     let location =
