@@ -7,14 +7,14 @@ use chrono::{DateTime, FixedOffset, TimeZone, Utc};
 ///
 /// Returns a FixedOffset. Falls back to UTC if invalid.
 pub fn parse_tz(timezone: &str) -> FixedOffset {
-  if timezone == "UTC" || timezone.is_empty() {
+  if timezone.is_empty() || timezone == "UTC" {
     return FixedOffset::east_opt(0).unwrap();
   }
 
-  if let Some(stripped) = timezone.strip_prefix("UTC")
-    && let Ok(hours) = stripped.parse::<i32>()
-  {
-    // Convert hours to seconds
+  // Optional "UTC" prefix
+  let tz_str = timezone.strip_prefix("UTC").unwrap_or(timezone);
+
+  if let Ok(hours) = tz_str.parse::<i32>() {
     let seconds = hours * 3600;
     if let Some(offset) = FixedOffset::east_opt(seconds) {
       return offset;

@@ -202,7 +202,7 @@ pub fn sessions() -> String {
     lines.push("**Active Sessions**".to_string());
 
     for (start, end, loc) in &active {
-      lines.push(format!("<t:{start}:F> – <t:{end}:t> @ {loc}"));
+      lines.push(format!("<t:{start}:F> – <t:{end}:t> @ **{loc}**"));
     }
   }
 
@@ -215,7 +215,7 @@ pub fn sessions() -> String {
     lines.push("**Upcoming Sessions**".to_string());
 
     for (start, end, loc) in upcoming.iter().take(5) {
-      lines.push(format!("<t:{start}:F> – <t:{end}:t> @ {loc}"));
+      lines.push(format!("<t:{start}:F> – <t:{end}:t> @ **{loc}**"));
     }
   }
 
