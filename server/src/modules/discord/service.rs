@@ -100,9 +100,9 @@ impl ScheduledService for DiscordNotificationService {
       let end_secs = session.end_time.as_ref().map_or(0, |t| t.seconds);
       let location = locations.get(&session.location_id).map_or("Unknown", |l| l.location.as_str());
 
-      let date_str = format_date(start_secs, &tz);
-      let start_time_str = format_time(start_secs, &tz);
-      let end_time_str = format_time(end_secs, &tz);
+      let date_str = format_date(start_secs, tz);
+      let start_time_str = format_time(start_secs, tz);
+      let end_time_str = format_time(end_secs, tz);
 
       // Session starting soon reminder
       if start_reminder_secs > 0 {
@@ -212,7 +212,7 @@ impl ScheduledService for DiscordNotificationService {
           }
 
           let location = locations.get(&pes.session.location_id).map_or("Unknown", |l| l.location.as_str());
-          let end_time_str = format_time(pes.end_secs, &tz);
+          let end_time_str = format_time(pes.end_secs, tz);
 
           for (_, ms) in &pes.checked_in {
             if Notification::exists(NotificationType::Overtime, &pes.session_id, Some(&ms.team_member_id))? {
@@ -267,7 +267,7 @@ impl ScheduledService for DiscordNotificationService {
           let member_name = member.display_name.as_deref().unwrap_or(&member.first_name);
           let location = locations.get(&session.location_id).map_or("Unknown", |l| l.location.as_str());
           let end_secs = session.end_time.as_ref().map_or(0, |t| t.seconds);
-          let end_time_str = format_time(end_secs, &tz);
+          let end_time_str = format_time(end_secs, tz);
 
           let msg = auto_checkout_msg_template
             .replace("{username}", &mention)
